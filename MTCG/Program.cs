@@ -1,4 +1,5 @@
 ﻿using System;
+using Cards;
 
 namespace MTCG
 {
@@ -7,6 +8,8 @@ namespace MTCG
         static void Main(string[] args)
         {
             Console.WriteLine("Hello World!");
+
+            BaseCards dragon = new BaseCards();
         }
     }
 }
