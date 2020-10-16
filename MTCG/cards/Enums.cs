@@ -1,24 +1,28 @@
 ﻿using System;
 
-public enum elementType
+namespace Enums
 {
-    Fire = 1,
-    Water,
-    Normal
-}
+    public enum elementType
+    {
+        Fire = 1,
+        Water,
+        Normal
+    }
 
-public enum cardProperty
-{
-    Dragon = 1,
-    Knight,
-    Org,
-    Wizard,
-    Goblin,
-    Kraken
-}
+    public enum cardProperty
+    {
+        Dragon = 1,
+        Knight,
+        Org,
+        Wizard,
+        Goblin,
+        Kraken
+    }
 
-public enum cardType
-{
-    Monster = 1,
-    Spell
+    public enum cardType
+    {
+        Monster = 1,
+        Spell
+    }
+    
 }

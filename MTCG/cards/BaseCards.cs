@@ -1,4 +1,5 @@
 ﻿using System;
+using Enums;
 
 namespace Cards
 {
@@ -6,7 +7,7 @@ namespace Cards
     {
         protected elementType Element;
         protected cardProperty CardProperty;
-        protected cardType Type;
+        protected cardType CardType;
 
         protected int CardDamage;
         protected string CardName;
