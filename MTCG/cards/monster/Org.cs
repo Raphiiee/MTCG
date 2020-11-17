@@ -5,11 +5,10 @@ namespace MTCG.Cards.monster
 {
     public class Org : BaseCards
     {
-        public Org() : base()
+        public Org(CardType cardType, ElementType element, CardProperty cardProperty, int cardDamage, string cardName)
+            : base(cardType, element, cardProperty, cardDamage, cardName)
         {
-            this.CardProperty = cardProperty.Org;
-            this.Element = elementType.Normal;
-            this.CardType = cardType.Monster;
+
         }
     }
 }

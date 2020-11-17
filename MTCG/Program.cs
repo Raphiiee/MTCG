@@ -1,5 +1,7 @@
 ﻿using System;
 using Cards;
+using Enums;
+using MTCG.Cards.monster;
 
 namespace MTCG
 {
@@ -9,7 +11,8 @@ namespace MTCG
         {
             Console.WriteLine("Hello World!");
 
-            BaseCards dragon = new BaseCards();
+            Dragon dragon = new Dragon(CardType.Monster, ElementType.Fire, CardProperty.Dragon, 10, "Ich bimbs");
+            Console.WriteLine(dragon.CardName);
         }
     }
 }

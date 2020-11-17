@@ -5,10 +5,10 @@ namespace MTCG.cards.spell
 {
     public class FireSpell : BaseCards
     {
-        public FireSpell() : base()
+        public FireSpell(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty = 0)
+            : base(cardType, element, cardProperty, cardDamage, cardName)
         {
-            this.CardType = cardType.Spell;
-            this.Element = elementType.Fire;
+
         }
     }
 }

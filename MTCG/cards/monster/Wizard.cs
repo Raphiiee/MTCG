@@ -5,11 +5,10 @@ namespace MTCG.Cards.monster
 {
     public class Wizard : BaseCards
     {
-        public Wizard() : base()
+        public Wizard(CardType cardType, ElementType element, CardProperty cardProperty, int cardDamage, string cardName)
+            : base(cardType, element, cardProperty, cardDamage, cardName)
         {
-            this.CardProperty = cardProperty.Wizard;
-            this.Element = elementType.Fire;
-            this.CardType = cardType.Monster;
+
         }
     }
 }

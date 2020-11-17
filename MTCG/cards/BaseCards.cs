@@ -3,28 +3,24 @@ using Enums;
 
 namespace Cards
 {
-    public class BaseCards
+    public abstract class BaseCards
     {
-        protected elementType Element;
-        protected cardProperty CardProperty;
-        protected cardType CardType;
+        public ElementType Element {  get; private set; }
+        public CardProperty CardProperty { get; private set; }
+        public CardType CardType { get; private set; }
 
-        protected int CardDamage;
-        protected string CardName;
+        public int CardDamage { get; private set; }
+        public string CardName {  get; private set; }
 
-        public int GetCardDamage()
+        protected BaseCards(CardType cardType, ElementType element, CardProperty cardProperty, int cardDamage, string cardName)
         {
-            return CardDamage;
+            this.CardType = cardType;
+            this.Element = element;
+            this.CardProperty = cardProperty;
+            this.CardDamage = cardDamage;
+            this.CardName = cardName;
         }
 
-        public elementType GetElementType()
-        {
-            return Element;
-        }
-        public cardProperty GetCardProperty()
-        {
-            return CardProperty;
-        }
     }
 
 }

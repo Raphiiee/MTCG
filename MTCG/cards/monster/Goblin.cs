@@ -5,11 +5,10 @@ namespace MTCG.Cards.monster
 {
     public class Goblin : BaseCards
     {
-        public Goblin() : base()
+        public Goblin(CardType cardType, ElementType element, CardProperty cardProperty, int cardDamage, string cardName)
+            : base(cardType, element, cardProperty, cardDamage, cardName)
         {
-            this.CardProperty = cardProperty.Goblin;
-            this.Element = elementType.Water;
-            this.CardType = cardType.Monster;
+
         }
     }
 }

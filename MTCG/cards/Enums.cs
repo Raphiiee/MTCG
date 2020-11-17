@@ -2,14 +2,14 @@
 
 namespace Enums
 {
-    public enum elementType
+    public enum ElementType
     {
         Fire = 1,
         Water,
         Normal
     }
 
-    public enum cardProperty
+    public enum CardProperty
     {
         Dragon = 1,
         Knight,
@@ -19,7 +19,7 @@ namespace Enums
         Kraken
     }
 
-    public enum cardType
+    public enum CardType
     {
         Monster = 1,
         Spell
