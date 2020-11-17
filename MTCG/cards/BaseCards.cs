@@ -1,5 +1,5 @@
 ﻿using System;
-using Enums;
+using MTCG.cards.enums;
 
 namespace Cards
 {

@@ -1,4 +1,4 @@
-﻿using Enums;
+﻿using MTCG.cards.enums;
 using MTCG.cards.spell;
 using NUnit.Framework;
 

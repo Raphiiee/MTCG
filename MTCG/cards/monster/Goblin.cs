@@ -1,5 +1,5 @@
 ﻿using Cards;
-using Enums;
+using MTCG.cards.enums;
 
 namespace MTCG.Cards.monster
 {

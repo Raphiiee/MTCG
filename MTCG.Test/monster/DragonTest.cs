@@ -1,4 +1,4 @@
-using Enums;
+using MTCG.cards.enums;
 using MTCG.Cards.monster;
 using NUnit.Framework;
 
