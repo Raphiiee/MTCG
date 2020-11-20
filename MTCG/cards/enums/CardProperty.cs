@@ -7,6 +7,7 @@
         Org,
         Wizard,
         Goblin,
-        Kraken
+        Kraken,
+        FireElve
     }
 }

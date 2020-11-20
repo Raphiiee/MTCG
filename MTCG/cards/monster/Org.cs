@@ -5,8 +5,8 @@ namespace MTCG.Cards.monster
 {
     public class Org : BaseCards
     {
-        public Org(CardType cardType, ElementType element, CardProperty cardProperty, int cardDamage, string cardName)
-            : base(cardType, element, cardProperty, cardDamage, cardName)
+        public Org(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardHealth)
+            : base(cardType, element, cardDamage, cardName, cardProperty, cardHealth)
         {
 
         }

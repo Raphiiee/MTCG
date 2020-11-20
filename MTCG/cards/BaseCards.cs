@@ -10,15 +10,17 @@ namespace Cards
         public CardType CardType { get; private set; }
 
         public int CardDamage { get; private set; }
-        public string CardName {  get; private set; }
+        public string CardName { get; private set; }
+        public int CardHealth { get; private set; }
 
-        protected BaseCards(CardType cardType, ElementType element, CardProperty cardProperty, int cardDamage, string cardName)
+        protected BaseCards(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardHealth)
         {
             this.CardType = cardType;
             this.Element = element;
             this.CardProperty = cardProperty;
             this.CardDamage = cardDamage;
             this.CardName = cardName;
+            this.CardHealth = cardHealth;
         }
 
     }

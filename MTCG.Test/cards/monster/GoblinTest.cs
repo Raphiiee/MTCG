@@ -11,7 +11,7 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _goblin = new Goblin(CardType.Monster, ElementType.Fire, CardProperty.Goblin, 100, "Gobster the Robster");
+            _goblin = new Goblin(CardType.Monster, ElementType.Fire, 100, "Gobster the Robster", CardProperty.Goblin, 100);
         }
 
         [Test]
@@ -19,9 +19,10 @@ namespace MTCG.Test.monster
         {
             Assert.AreEqual(_goblin.CardType, CardType.Monster);
             Assert.AreEqual(_goblin.Element, ElementType.Fire);
-            Assert.AreEqual(_goblin.CardProperty, CardProperty.Goblin);
             Assert.AreEqual(_goblin.CardDamage, 100);
             Assert.AreEqual(_goblin.CardName, "Gobster the Robster");
+            Assert.AreEqual(_goblin.CardProperty, CardProperty.Goblin);
+            Assert.AreEqual(_goblin.CardHealth, 100);
         }
     }
 }

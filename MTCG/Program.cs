@@ -11,8 +11,8 @@ namespace MTCG
         {
             Console.WriteLine("Hello World!");
 
-            Dragon dragon = new Dragon(CardType.Monster, ElementType.Fire, CardProperty.Dragon, 10, "Ich bimbs");
-            Console.WriteLine(dragon);
+            // dragon = new Dragon(CardType.Monster, ElementType.Fire, CardProperty.Dragon, 10, "Ich bimbs");
+            // Console.WriteLine(dragon);
         }
     }
 }

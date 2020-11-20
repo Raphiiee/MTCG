@@ -11,7 +11,7 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _org = new Org(CardType.Monster, ElementType.Normal, CardProperty.Org, 190, "Ich bin Orrg und du?");
+            _org = new Org(CardType.Monster, ElementType.Normal, 190, "Ich bin Orrg und du?", CardProperty.Org, 100);
         }
 
         [Test]
@@ -19,9 +19,10 @@ namespace MTCG.Test.monster
         {
             Assert.AreEqual(_org.CardType, CardType.Monster);
             Assert.AreEqual(_org.Element, ElementType.Normal);
-            Assert.AreEqual(_org.CardProperty, CardProperty.Org);
             Assert.AreEqual(_org.CardDamage, 190);
             Assert.AreEqual(_org.CardName, "Ich bin Orrg und du?");
+            Assert.AreEqual(_org.CardProperty, CardProperty.Org);
+            Assert.AreEqual(_org.CardHealth, 100);
         }
     }
 }

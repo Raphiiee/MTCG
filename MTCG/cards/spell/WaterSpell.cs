@@ -5,8 +5,8 @@ namespace MTCG.cards.spell
 {
     public class WaterSpell : BaseCards
     {
-        public WaterSpell(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty = 0)
-            : base(cardType, element, cardProperty, cardDamage, cardName)
+        public WaterSpell(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty = 0, int cardHealth = 0)
+            : base(cardType, element, cardDamage, cardName, cardProperty, cardHealth)
         {
             
         }

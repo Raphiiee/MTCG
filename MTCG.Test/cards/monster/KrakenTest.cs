@@ -11,7 +11,7 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _kraken = new Kraken(CardType.Monster, ElementType.Water, CardProperty.Kraken, 170, "Krakie dakie do whatcha gonna do");
+            _kraken = new Kraken(CardType.Monster, ElementType.Water, 170, "Krakie dakie do whatcha gonna do", CardProperty.Kraken, 100);
         }
 
         [Test]
@@ -19,9 +19,10 @@ namespace MTCG.Test.monster
         {
             Assert.AreEqual(_kraken.CardType, CardType.Monster);
             Assert.AreEqual(_kraken.Element, ElementType.Water);
-            Assert.AreEqual(_kraken.CardProperty, CardProperty.Kraken);
             Assert.AreEqual(_kraken.CardDamage, 170);
             Assert.AreEqual(_kraken.CardName, "Krakie dakie do whatcha gonna do");
+            Assert.AreEqual(_kraken.CardProperty, CardProperty.Kraken);
+            Assert.AreEqual(_kraken.CardHealth, 100);
         }
     }
 }

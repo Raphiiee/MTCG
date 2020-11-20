@@ -11,7 +11,7 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _knight = new Knight(CardType.Monster, ElementType.Normal, CardProperty.Knight, 150, "Knight in the Night, just Right");
+            _knight = new Knight(CardType.Monster, ElementType.Normal, 150, "Knight in the Night, just Right", CardProperty.Knight, 100);
         }
 
         [Test]
@@ -19,9 +19,10 @@ namespace MTCG.Test.monster
         {
             Assert.AreEqual(_knight.CardType, CardType.Monster);
             Assert.AreEqual(_knight.Element, ElementType.Normal);
-            Assert.AreEqual(_knight.CardProperty, CardProperty.Knight);
             Assert.AreEqual(_knight.CardDamage, 150);
             Assert.AreEqual(_knight.CardName, "Knight in the Night, just Right");
+            Assert.AreEqual(_knight.CardProperty, CardProperty.Knight);
+            Assert.AreEqual(_knight.CardHealth, 100);
         }
     }
 }

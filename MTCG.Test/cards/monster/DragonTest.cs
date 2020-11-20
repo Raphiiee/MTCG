@@ -5,13 +5,13 @@ using NUnit.Framework;
 namespace MTCG.Test.monster
 {
     [TestFixture]
-    public class Tests
+    public class DragonTest
     {
         private Dragon _dragon;
         [SetUp]
         public void Setup()
         {
-            _dragon = new Dragon(CardType.Monster, ElementType.Fire, CardProperty.Dragon, 10, "Drache oder so");
+            _dragon = new Dragon(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.Dragon, 100);
         }
 
         [Test]
@@ -19,9 +19,10 @@ namespace MTCG.Test.monster
         {
             Assert.AreEqual(_dragon.CardType, CardType.Monster);
             Assert.AreEqual(_dragon.Element, ElementType.Fire);
-            Assert.AreEqual(_dragon.CardProperty, CardProperty.Dragon);
             Assert.AreEqual(_dragon.CardDamage, 10);
             Assert.AreEqual(_dragon.CardName, "Drache oder so");
+            Assert.AreEqual(_dragon.CardProperty, CardProperty.Dragon);
+            Assert.AreEqual(_dragon.CardHealth, 100);
         }
     }
 }
