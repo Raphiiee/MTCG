@@ -8,21 +8,31 @@ namespace MTCG.Test.monster
     public class DragonTest
     {
         private Dragon _dragon;
+        private FireElve _fireElve;
+
         [SetUp]
         public void Setup()
         {
-            _dragon = new Dragon(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.Dragon, 100);
+            _dragon = new Dragon(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.Dragon);
+            _fireElve = new FireElve(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.FireElve);
         }
 
         [Test]
         public void InitTest()
         {
-            Assert.AreEqual(_dragon.CardType, CardType.Monster);
-            Assert.AreEqual(_dragon.Element, ElementType.Fire);
-            Assert.AreEqual(_dragon.CardDamage, 10);
-            Assert.AreEqual(_dragon.CardName, "Drache oder so");
-            Assert.AreEqual(_dragon.CardProperty, CardProperty.Dragon);
-            Assert.AreEqual(_dragon.CardHealth, 100);
+            Assert.AreEqual(CardType.Monster, _dragon.CardType);
+            Assert.AreEqual(ElementType.Fire, _dragon.Element);
+            Assert.AreEqual(10, _dragon.CardDamage);
+            Assert.AreEqual("Drache oder so", _dragon.CardName);
+            Assert.AreEqual(CardProperty.Dragon, _dragon.CardProperty);
         }
+
+        [Test]
+        public void ZeroAttackPoints()
+        {
+            Assert.AreEqual(_dragon.GetCardDamagePoints(_fireElve), 0);
+        }
+
+
     }
 }

@@ -11,18 +11,17 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _fireElves = new FireElve(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.FireElve, 100);
+            _fireElves = new FireElve(CardType.Monster, ElementType.Fire, 10, "I am Fry the FireFly", CardProperty.FireElve);
         }
 
         [Test]
         public void InitTest()
         {
-            Assert.AreEqual(_fireElves.CardType, CardType.Monster);
-            Assert.AreEqual(_fireElves.Element, ElementType.Fire);
-            Assert.AreEqual(_fireElves.CardDamage, 10);
-            Assert.AreEqual(_fireElves.CardName, "Drache oder so");
-            Assert.AreEqual(_fireElves.CardProperty, CardProperty.FireElve);
-            Assert.AreEqual(_fireElves.CardHealth, 100);
+            Assert.AreEqual(CardType.Monster, _fireElves.CardType);
+            Assert.AreEqual(ElementType.Fire, _fireElves.Element);
+            Assert.AreEqual(10, _fireElves.CardDamage);
+            Assert.AreEqual("I am Fry the FireFly", _fireElves.CardName);
+            Assert.AreEqual(CardProperty.FireElve, _fireElves.CardProperty);
         }
     }
 }

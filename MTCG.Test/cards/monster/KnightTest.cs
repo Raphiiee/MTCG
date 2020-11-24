@@ -1,5 +1,6 @@
 ﻿using MTCG.cards.enums;
 using MTCG.Cards.monster;
+using MTCG.cards.spell;
 using NUnit.Framework;
 
 namespace MTCG.Test.monster
@@ -8,21 +9,29 @@ namespace MTCG.Test.monster
     public class KnightTest
     {
         private Knight _knight;
+        private WaterSpell _waterSpell;
+
         [SetUp]
         public void Setup()
         {
-            _knight = new Knight(CardType.Monster, ElementType.Normal, 150, "Knight in the Night, just Right", CardProperty.Knight, 100);
+            _knight = new Knight(CardType.Monster, ElementType.Normal, 150, "Knight in the Night, just Right", CardProperty.Knight);
+            _waterSpell = new WaterSpell(CardType.Spell, ElementType.Water, 20, "Nasser Spell");
         }
 
         [Test]
         public void InitTest()
         {
-            Assert.AreEqual(_knight.CardType, CardType.Monster);
-            Assert.AreEqual(_knight.Element, ElementType.Normal);
-            Assert.AreEqual(_knight.CardDamage, 150);
-            Assert.AreEqual(_knight.CardName, "Knight in the Night, just Right");
-            Assert.AreEqual(_knight.CardProperty, CardProperty.Knight);
-            Assert.AreEqual(_knight.CardHealth, 100);
+            Assert.AreEqual(CardType.Monster, _knight.CardType);
+            Assert.AreEqual(ElementType.Normal, _knight.Element);
+            Assert.AreEqual(150, _knight.CardDamage);
+            Assert.AreEqual("Knight in the Night, just Right", _knight.CardName);
+            Assert.AreEqual(CardProperty.Knight, _knight.CardProperty);
+        }
+
+        [Test]
+        public void ZeroAttackPoints()
+        {
+            Assert.AreEqual(0, _knight.GetCardDamagePoints(_waterSpell));
         }
     }
 }

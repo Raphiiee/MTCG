@@ -8,21 +8,22 @@ namespace MTCG.Test.monster
     public class KrakenTest
     {
         private Kraken _kraken;
+
         [SetUp]
         public void Setup()
         {
-            _kraken = new Kraken(CardType.Monster, ElementType.Water, 170, "Krakie dakie do whatcha gonna do", CardProperty.Kraken, 100);
+            _kraken = new Kraken(CardType.Monster, ElementType.Water, 170, "Krakie dakie do whatcha gonna do", CardProperty.Kraken);
         }
 
         [Test]
         public void InitTest()
         {
-            Assert.AreEqual(_kraken.CardType, CardType.Monster);
-            Assert.AreEqual(_kraken.Element, ElementType.Water);
-            Assert.AreEqual(_kraken.CardDamage, 170);
-            Assert.AreEqual(_kraken.CardName, "Krakie dakie do whatcha gonna do");
-            Assert.AreEqual(_kraken.CardProperty, CardProperty.Kraken);
-            Assert.AreEqual(_kraken.CardHealth, 100);
+            Assert.AreEqual(CardType.Monster, _kraken.CardType);
+            Assert.AreEqual(ElementType.Water, _kraken.Element);
+            Assert.AreEqual(170, _kraken.CardDamage);
+            Assert.AreEqual("Krakie dakie do whatcha gonna do", _kraken.CardName);
+            Assert.AreEqual(CardProperty.Kraken, _kraken.CardProperty);
         }
+
     }
 }

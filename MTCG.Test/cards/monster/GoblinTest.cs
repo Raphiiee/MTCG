@@ -8,21 +8,29 @@ namespace MTCG.Test.monster
     public class GoblinTest
     {
         private Goblin _goblin;
+        private Dragon _dragon;
+
         [SetUp]
         public void Setup()
         {
-            _goblin = new Goblin(CardType.Monster, ElementType.Fire, 100, "Gobster the Robster", CardProperty.Goblin, 100);
+            _goblin = new Goblin(CardType.Monster, ElementType.Fire, 100, "Gobster the Robster", CardProperty.Goblin);
+            _dragon = new Dragon(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.Dragon);
         }
 
         [Test]
         public void InitTest()
         {
-            Assert.AreEqual(_goblin.CardType, CardType.Monster);
-            Assert.AreEqual(_goblin.Element, ElementType.Fire);
-            Assert.AreEqual(_goblin.CardDamage, 100);
-            Assert.AreEqual(_goblin.CardName, "Gobster the Robster");
-            Assert.AreEqual(_goblin.CardProperty, CardProperty.Goblin);
-            Assert.AreEqual(_goblin.CardHealth, 100);
+            Assert.AreEqual(CardType.Monster, _goblin.CardType);
+            Assert.AreEqual(ElementType.Fire, _goblin.Element);
+            Assert.AreEqual(100, _goblin.CardDamage);
+            Assert.AreEqual("Gobster the Robster", _goblin.CardName);
+            Assert.AreEqual(CardProperty.Goblin, _goblin.CardProperty);
+        }
+
+        [Test]
+        public void ZeroAttackPoints()
+        {
+            Assert.AreEqual(_goblin.GetCardDamagePoints(_dragon), 0);
         }
     }
 }

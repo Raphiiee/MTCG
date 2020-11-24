@@ -1,5 +1,4 @@
 ﻿using System;
-using Cards;
 using MTCG.cards.enums;
 using MTCG.Cards.monster;
 

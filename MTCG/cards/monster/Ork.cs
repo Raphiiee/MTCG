@@ -3,9 +3,9 @@ using MTCG.cards.enums;
 
 namespace MTCG.Cards.monster
 {
-    public class Kraken : BaseCards
+    public class Ork : BaseCards
     {
-        public Kraken(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty)
+        public Ork(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty)
             : base(cardType, element, cardDamage, cardName, cardProperty)
         {
 
@@ -13,6 +13,11 @@ namespace MTCG.Cards.monster
 
         public int GetCardDamagePoints(BaseCards opponent)
         {
+            if (opponent.CardProperty == CardProperty.Wizard)
+            {
+                return 0;
+            }
+
             return this.CardDamage;
         }
     }

@@ -1,14 +1,25 @@
-﻿using Cards;
+﻿using MTCG.cards;
 using MTCG.cards.enums;
 
 namespace MTCG.Cards.monster
 {
     public class Dragon : BaseCards
     {
-        public Dragon(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardHealth)
-            : base(cardType, element, cardDamage, cardName, cardProperty, cardHealth)
+        public Dragon(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty)
+            : base(cardType, element, cardDamage, cardName, cardProperty)
         {
 
         }
+
+        public int GetCardDamagePoints(BaseCards opponent)
+        {
+            if (opponent.CardProperty == CardProperty.FireElve)
+            {
+                return 0;
+            }
+
+            return this.CardDamage;
+        }
+
     }
 }
