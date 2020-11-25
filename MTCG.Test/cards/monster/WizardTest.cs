@@ -11,7 +11,7 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _wizard = new Wizard(CardType.Monster, ElementType.Fire, CardProperty.Wizard, 200, "Ich bin ein Witz art");
+            _wizard = new Wizard(CardType.Monster, ElementType.Fire, 200, "Ich bin ein Witz art", CardProperty.Wizard);
         }
 
         [Test]
@@ -19,9 +19,9 @@ namespace MTCG.Test.monster
         {
             Assert.AreEqual(_wizard.CardType, CardType.Monster);
             Assert.AreEqual(_wizard.Element, ElementType.Fire);
-            Assert.AreEqual(_wizard.CardProperty, CardProperty.Wizard);
             Assert.AreEqual(_wizard.CardDamage, 200);
             Assert.AreEqual(_wizard.CardName, "Ich bin ein Witz art");
+            Assert.AreEqual(_wizard.CardProperty, CardProperty.Wizard);
         }
     }
 }
