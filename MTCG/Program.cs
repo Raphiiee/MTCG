@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Threading.Tasks;
 using MTCG.cards.enums;
-using MTCG.Cards.monster;
+using MTCG.cards.monster;
+using MTCG.server;
+using MTCG.user;
 
 namespace MTCG
 {
@@ -8,10 +11,21 @@ namespace MTCG
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            /*Database connectHandler = new Database();
+            connectHandler.Connection();
 
-            // dragon = new Dragon(CardType.Monster, ElementType.Fire, CardProperty.Dragon, 10, "Ich bimbs");
-            // Console.WriteLine(dragon);
+            if ( connectHandler.Login("Raphie", "Raphie"))
+            {
+                Console.WriteLine("YOOOOOOO");
+            }
+
+            connectHandler.Logout("Raphie");*/
+
+            User user = new User("abc");
+
+            Console.WriteLine(user.Coins);
+
+
         }
     }
 }

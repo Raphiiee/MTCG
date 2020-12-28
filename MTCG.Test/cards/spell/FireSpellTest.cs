@@ -1,5 +1,5 @@
 ﻿using MTCG.cards.enums;
-using MTCG.Cards.monster;
+using MTCG.cards.monster;
 using MTCG.cards.spell;
 using NUnit.Framework;
 

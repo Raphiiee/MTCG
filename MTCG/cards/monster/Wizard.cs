@@ -1,7 +1,6 @@
-﻿using MTCG.cards;
-using MTCG.cards.enums;
+﻿using MTCG.cards.enums;
 
-namespace MTCG.Cards.monster
+namespace MTCG.cards.monster
 {
     public class Wizard : BaseCards
     {

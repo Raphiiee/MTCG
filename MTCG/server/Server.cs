@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using MTCG.DB.structs;
 
-namespace MTCG.DB
+namespace MTCG.server
 {
     public class Server
     {
