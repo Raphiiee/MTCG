@@ -1,9 +1,10 @@
 ﻿using System;
-using System.Threading.Tasks;
-using MTCG.cards.enums;
-using MTCG.cards.monster;
+using MTCG.battle;
+using MTCG.cards;
+using MTCG.database;
 using MTCG.server;
 using MTCG.user;
+using MTCG.user.enums;
 
 namespace MTCG
 {
@@ -11,20 +12,39 @@ namespace MTCG
     {
         static void Main(string[] args)
         {
-            /*Database connectHandler = new Database();
-            connectHandler.Connection();
+            Database connectHandler = new Database();
+            //connectHandler.Connection();
+            //User user = new User(connectHandler);
 
-            if ( connectHandler.Login("Raphie", "Raphie"))
+            /*if ( connectHandler.Login("Raphie", "Raphie"))
             {
                 Console.WriteLine("YOOOOOOO");
             }
 
             connectHandler.Logout("Raphie");*/
 
-            User user = new User("abc");
+            //connectHandler.ScoreHandler("banane", ScoreProperty.Load, 0);
 
-            Console.WriteLine(user.Coins);
 
+            //Console.WriteLine(connectHandler.ScoreHandler("banane", ScoreProperty.Lose, 100));
+
+            //Console.WriteLine(connectHandler.UsernameTaken("Fotzenkind"));
+            //Console.WriteLine(connectHandler.CoinHandler("banane", CoinProperty.Decrease, 1));
+            /*User user = new User("test", "test");
+            user.LoginOrCreate();
+            user.LoadCards();
+            user.PrintStackCards();
+            user.PrintDeckCards();
+            user.Logout();*/
+
+            /*CardData data = new CardData();
+            data.PrintAllCards();*/
+
+            //connectHandler.InsertRandomCards("test");
+
+            BattleHandler battle = new BattleHandler();
+
+            battle.StartBattle("test", "fest");
 
         }
     }
