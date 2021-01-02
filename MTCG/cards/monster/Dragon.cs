@@ -4,8 +4,8 @@ namespace MTCG.cards.monster
 {
     public class Dragon : BaseCards
     {
-        public Dragon(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty)
-            : base(cardType, element, cardDamage, cardName, cardProperty)
+        public Dragon(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardId)
+            : base(cardType, element, cardDamage, cardName, cardProperty, cardId)
         {
 
         }

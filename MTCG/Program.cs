@@ -28,23 +28,26 @@ namespace MTCG
 
             //Console.WriteLine(connectHandler.ScoreHandler("banane", ScoreProperty.Lose, 100));
 
-            //Console.WriteLine(connectHandler.UsernameTaken("Fotzenkind"));
+            //Console.WriteLine(connectHandler.UsernameTaken("Fenkind"));
             //Console.WriteLine(connectHandler.CoinHandler("banane", CoinProperty.Decrease, 1));
-            /*User user = new User("test", "test");
+            User user = new User("test", "test");
             user.LoginOrCreate();
             user.LoadCards();
             user.PrintStackCards();
             user.PrintDeckCards();
-            user.Logout();*/
+            user.SwapCard(144);
+            user.PrintStackCards();
+            user.PrintDeckCards();
+            user.Logout();
 
             /*CardData data = new CardData();
             data.PrintAllCards();*/
 
             //connectHandler.InsertRandomCards("test");
 
-            BattleHandler battle = new BattleHandler();
+            /*BattleHandler battle = new BattleHandler();
 
-            battle.StartBattle("test", "fest");
+            battle.StartBattle("test", "fest");*/
 
         }
     }

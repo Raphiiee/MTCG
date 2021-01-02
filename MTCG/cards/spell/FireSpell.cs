@@ -4,8 +4,8 @@ namespace MTCG.cards.spell
 {
     public class FireSpell : BaseCards
     {
-        public FireSpell(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty = 0)
-            : base(cardType, element, cardDamage, cardName, cardProperty)
+        public FireSpell(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardId)
+            : base(cardType, element, cardDamage, cardName, cardProperty, cardId)
         {
 
         }

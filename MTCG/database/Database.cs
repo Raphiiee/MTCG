@@ -7,10 +7,10 @@ using MTCG.user.enums;
 namespace MTCG.database
 {
     public class Database
-    { 
-        string _connString = "Host=localhost;Username=postgres;Password=123;Database=mtcg";
-        private NpgsqlConnection _conn;
-        private Random _r = new Random();
+    {
+        readonly string _connString = "Host=localhost;Username=postgres;Password=123;Database=mtcg";
+        private readonly NpgsqlConnection _conn;
+        private readonly Random _r = new Random();
 
         public Database()
         { 
@@ -24,27 +24,6 @@ namespace MTCG.database
                 throw;
             }
         }
-        
-        public void InsertError()
-         {
-             // Insert
-             string abc = "ICh bin eine Biene2!";
-             var cmd = new NpgsqlCommand("INSERT INTO atable_test (column_test) VALUES (@p)", _conn);
-             cmd.Parameters.AddWithValue("p", abc);
-             cmd.Prepare();
-             cmd.ExecuteNonQuery();
-            
-         }
-        
-        public void GetError()
-         {
-             // Retrieve all rows
-             NpgsqlCommand cmd = new NpgsqlCommand("SELECT * FROM atable_test", _conn);
-             cmd.Prepare();
-             NpgsqlDataReader reader = cmd.ExecuteReader();
-                 while ( reader.Read())
-                     Console.WriteLine(reader.GetString(0));
-         }
         
         public int GetMaxCards()
         { 
@@ -150,6 +129,48 @@ namespace MTCG.database
             _conn.Close();
             return score;
 
+        }
+
+        public void SwapCard(string user, int stackCard, int deckCard = 0)
+        {
+            string sqlSetDeckCardTrue = "UPDATE stack SET isindeck=true WHERE username=@u AND card_id=@ci";
+            string sqlSetDeckCardFalse = "UPDATE stack SET isindeck=false WHERE username=@u AND card_id=@ci";
+
+            try
+            {
+                _conn.Open();
+
+                if (deckCard == 0)
+                {
+                    var register = new NpgsqlCommand(sqlSetDeckCardTrue, _conn);
+                    register.Parameters.AddWithValue("u", user);
+                    register.Parameters.AddWithValue("ci", stackCard);
+                    register.Prepare();
+                    register.ExecuteNonQuery();
+                }
+                else
+                {
+                    var register = new NpgsqlCommand(sqlSetDeckCardFalse, _conn);
+                    register.Parameters.AddWithValue("u", user);
+                    register.Parameters.AddWithValue("ci", deckCard);
+                    register.Prepare();
+                    register.ExecuteNonQuery();
+                    
+                    register = new NpgsqlCommand(sqlSetDeckCardTrue, _conn);
+                    register.Parameters.AddWithValue("u", user);
+                    register.Parameters.AddWithValue("ci", stackCard);
+                    register.Prepare();
+                    register.ExecuteNonQuery();
+                }
+                
+
+                _conn.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         public int CoinHandler(string user, CoinProperty property, int coinValue)

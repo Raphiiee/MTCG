@@ -63,7 +63,7 @@ namespace MTCG.user
         {
             foreach (KeyValuePair<int, Card> kvp in Stack)
             {
-                Console.WriteLine("Key = {0}, Card = {1} {2} {3} {4} {5}", kvp.Key, kvp.Value.CardType, kvp.Value.Element, kvp.Value.CardDamage, kvp.Value.CardName, kvp.Value.CardProperty);
+                Console.WriteLine("Key = {0}, Card = {1} {2} {3} {4} {5} {6}", kvp.Key, kvp.Value.CardType, kvp.Value.Element, kvp.Value.CardDamage, kvp.Value.CardName, kvp.Value.CardProperty, kvp.Value.CardId);
             }
 
             Console.WriteLine($"Cards: {Stack.Count}");
@@ -74,11 +74,39 @@ namespace MTCG.user
         {
             foreach (KeyValuePair<int, Card> kvp in Deck)
             {
-                Console.WriteLine("Key = {0}, Card = {1} {2} {3} {4} {5}", kvp.Key, kvp.Value.CardType, kvp.Value.Element, kvp.Value.CardDamage, kvp.Value.CardName, kvp.Value.CardProperty);
+                Console.WriteLine("Key = {0}, Card = {1} {2} {3} {4} {5} {6}", kvp.Key, kvp.Value.CardType, kvp.Value.Element, kvp.Value.CardDamage, kvp.Value.CardName, kvp.Value.CardProperty, kvp.Value.CardId);
             }
 
             Console.WriteLine($"Cards: {Deck.Count}");
             Console.WriteLine("Deck Cards Printed");
+        }
+
+        public bool SwapCard(int stackCardId)
+        {
+            Card tempCard;
+            int cardsInDeck = Deck.Count;
+            for (int i = 0; i < Stack.Count; i++)
+            {
+                if (Stack.TryGetValue(i, out tempCard) && cardsInDeck <= 3)
+                {
+                    _db.SwapCard(Username, stackCardId);
+                    LoadCards();
+                    return true;
+                }
+
+                if (Stack.TryGetValue(i, out tempCard) && cardsInDeck >= 4)
+                {
+                    Deck.TryGetValue(Deck.Count - 1, out tempCard);
+                    int lastCardIdInDeck = tempCard.CardId;
+
+                    _db.SwapCard(Username, stackCardId, lastCardIdInDeck);
+                    LoadCards();
+                    return true;
+                }
+            }
+            
+
+            return false;
         }
 
         public void Logout()

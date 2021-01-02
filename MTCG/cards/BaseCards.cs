@@ -10,14 +10,16 @@ namespace MTCG.cards
 
         public int CardDamage { get; private set; }
         public string CardName { get; private set; }
+        public int CardId { get; }
 
-        protected BaseCards(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty)
+        protected BaseCards(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardId)
         {
             this.CardType = cardType;
             this.Element = element;
             this.CardProperty = cardProperty;
             this.CardDamage = cardDamage;
             this.CardName = cardName;
+            this.CardId = cardId;
         }
 
         // Effectiveness is used only by Spell Cards

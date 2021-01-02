@@ -4,8 +4,8 @@ namespace MTCG.cards.monster
 {
     public class Kraken : BaseCards
     {
-        public Kraken(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty)
-            : base(cardType, element, cardDamage, cardName, cardProperty)
+        public Kraken(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardId)
+            : base(cardType, element, cardDamage, cardName, cardProperty, cardId)
         {
 
         }

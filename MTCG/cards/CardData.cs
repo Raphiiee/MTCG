@@ -27,6 +27,7 @@ namespace MTCG.cards
 
         public void UserDeckCards(string user, Dictionary<int, Card> deck)
         {
+            deck.Clear();
             int[] deckCardsArray = new int[5];
             Card temp;
             _cdb.LoadUserDeckCards(user, deckCardsArray);
@@ -45,6 +46,7 @@ namespace MTCG.cards
 
         public void UserStackCards(string user, Dictionary<int, Card> stack)
         {
+            stack.Clear();
             int[] stackCardsArray = new int[2000];
             Card temp;
             _cdb.LoadUserStackCards(user,stackCardsArray);

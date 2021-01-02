@@ -40,7 +40,8 @@ namespace MTCG.database
                                      (ElementType)reader.GetInt32(2), // Elementype
                                      reader.GetInt32(3), // cardDamage
                                      reader.GetString(4), // cardName
-                                     (CardProperty)reader.GetInt32(5)); // cardProperty
+                                     (CardProperty)reader.GetInt32(5),
+                                     reader.GetInt32(0)); // cardProperty
 
                 cardData.Add(reader.GetInt32(0), temp);
             }
