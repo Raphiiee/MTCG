@@ -172,6 +172,11 @@ namespace MTCG.user
             return false;
         }
 
+        public void ShowLeaderBoard()
+        {
+            Console.WriteLine(_db.ShowLeaderBoard());
+        }
+
         public void Logout()
         {
             _db.Logout(Username);

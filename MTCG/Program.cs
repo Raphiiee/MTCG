@@ -42,7 +42,8 @@ namespace MTCG
 
             User user = new User("test", "test");
             user.LoadCards();
-            user.TradeCard("fest", 222);
+            user.ShowLeaderBoard();
+            /*user.TradeCard("fest", 222);
             user.ShowTrades();
             /*user.PrintStackCards();
             user.PrintDeckCards();

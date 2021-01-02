@@ -222,6 +222,27 @@ namespace MTCG.database
             return coinValue;
         }
 
+        public string ShowLeaderBoard()
+        {
+            string sqlLeaderBoard = "SELECT username, wins, lose, score, ROUND(wins / lose::numeric, 3) AS winratio FROM \"user\" WHERE lose <> 0 ORDER BY score DESC, winratio DESC";
+            string leaderBoard = "";
+            int i = 1;
+
+            _conn.Open();
+            NpgsqlCommand cmd = new NpgsqlCommand(sqlLeaderBoard, _conn);
+            cmd.Prepare();
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                leaderBoard += $"\n{i++}. {reader.GetString(0)}: Wins:{reader.GetInt32(1)} Lose:{reader.GetInt32(2)} Score:{reader.GetInt32(3)} WinRatio:{reader.GetValue(4)}";
+            }
+
+            _conn.Close();
+
+
+            return leaderBoard;
+        }
+
         public bool UsernameTaken(string user)
         {
             int counter = 0;
