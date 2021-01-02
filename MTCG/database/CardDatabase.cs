@@ -185,6 +185,33 @@ namespace MTCG.database
             return true;
         }
 
+        public string ShowTrades(Dictionary<int, Card> cardData)
+        {
+            string trades = "";
+            string sqlShowTrades = "SELECT username, wanted_id, give_id FROM trade";
+            int i = 1;
+
+            _conn.Open();
+            NpgsqlCommand cmd = new NpgsqlCommand(sqlShowTrades, _conn);
+            cmd.Prepare();
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Card wantTemp;
+                Card giveTemp;
+
+                cardData.TryGetValue(reader.GetInt32(1), out wantTemp);
+                cardData.TryGetValue(reader.GetInt32(2), out giveTemp);
+
+                trades += $"\nUser: {reader.GetString(0)}";
+                trades += $"\n\tGives: CardId: {giveTemp.CardId} CardType: {giveTemp.CardType} CardDamage: {giveTemp.CardDamage} Element: {giveTemp.Element}";
+                trades += $"\n\tWants: CardId: {wantTemp.CardId} CardType: {wantTemp.CardType} CardDamage: {wantTemp.CardDamage} Element: {wantTemp.Element}\n\n";
+            }
+            _conn.Close();
+
+            return trades;
+        }
+
 
 
 

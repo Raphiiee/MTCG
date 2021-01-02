@@ -133,6 +133,11 @@ namespace MTCG.user
             return _cData.BuyCard(Username, _db.CoinHandler(Username, CoinProperty.Load), packId, cardArray);
         }
 
+        public void ShowTrades()
+        {
+            Console.WriteLine(_cData.ShowTrades());
+        }
+
         public void Logout()
         {
             _db.Logout(Username);

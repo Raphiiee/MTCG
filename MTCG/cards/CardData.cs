@@ -79,7 +79,10 @@ namespace MTCG.cards
             return _cdb.BuyCard(user, coins, packId, cardArray);
         }
 
-
+        public string ShowTrades()
+        {
+            return _cdb.ShowTrades(CData);
+        }
 
     }
 }

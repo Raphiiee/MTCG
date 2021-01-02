@@ -42,10 +42,11 @@ namespace MTCG
 
             User user = new User("FEST", "fest");
             user.LoadCards();
-            user.PrintStackCards();
+            user.ShowTrades();
+            /*user.PrintStackCards();
             user.PrintDeckCards();
-            /*user.ShowShop();
-            user.BuyCard(2);
+            user.ShowShop();
+            user.BuyCard(2);*/
 
             /*CardData data = new CardData();
             data.PrintAllCards();*/
