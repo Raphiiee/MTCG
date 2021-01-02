@@ -17,11 +17,12 @@ namespace MTCG.user
         private int _token;
         private Random _r = new Random();
         private Database _db = new Database();
+        CardData _cData = new CardData();
 
         public User(string username, string pwd)
         {
             _password = pwd;
-            Username = username;
+            Username = username.ToLower();
         }
 
         public void LoginOrCreate()
@@ -55,8 +56,7 @@ namespace MTCG.user
 
         public void LoadCards()
         {
-            CardData cData = new CardData();
-            cData.UserCards(Username, Stack, Deck);
+            _cData.UserCards(Username, Stack, Deck);
         }
 
         public void PrintStackCards()
@@ -104,9 +104,33 @@ namespace MTCG.user
                     return true;
                 }
             }
-            
 
             return false;
+        }
+
+        public void ShowShop()
+        {
+            Console.WriteLine(_cData.ShowShop());
+            
+        }
+
+        public bool BuyCard(int packId)
+        {
+            int[] cardArray = new int[20000];
+            Array.Fill(cardArray, -1);
+            int i = 0;
+            foreach (KeyValuePair<int, Card> kvp in Stack)
+            {
+                cardArray[i] = kvp.Value.CardId;
+                i++;
+            }
+            foreach (KeyValuePair<int, Card> kvp in Deck)
+            {
+                cardArray[i] = kvp.Value.CardId;
+                i++;
+            }
+
+            return _cData.BuyCard(Username, _db.CoinHandler(Username, CoinProperty.Load), packId, cardArray);
         }
 
         public void Logout()

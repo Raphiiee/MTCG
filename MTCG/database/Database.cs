@@ -173,7 +173,7 @@ namespace MTCG.database
             }
         }
 
-        public int CoinHandler(string user, CoinProperty property, int coinValue)
+        public int CoinHandler(string user, CoinProperty property, int coinValue = 0)
         {
             try
             {
@@ -207,7 +207,6 @@ namespace MTCG.database
                 }
 
                 cmd.Prepare();
-                Console.WriteLine("AAAAAAAAAA");
                 NpgsqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                     coinValue = Int32.Parse(reader[0].ToString());

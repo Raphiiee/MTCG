@@ -30,7 +30,7 @@ namespace MTCG
 
             //Console.WriteLine(connectHandler.UsernameTaken("Fenkind"));
             //Console.WriteLine(connectHandler.CoinHandler("banane", CoinProperty.Decrease, 1));
-            User user = new User("test", "test");
+            /*User user = new User("test", "test");
             user.LoginOrCreate();
             user.LoadCards();
             user.PrintStackCards();
@@ -38,7 +38,14 @@ namespace MTCG
             user.SwapCard(144);
             user.PrintStackCards();
             user.PrintDeckCards();
-            user.Logout();
+            user.Logout();*/
+
+            User user = new User("FEST", "fest");
+            user.LoadCards();
+            user.PrintStackCards();
+            user.PrintDeckCards();
+            /*user.ShowShop();
+            user.BuyCard(2);
 
             /*CardData data = new CardData();
             data.PrintAllCards();*/

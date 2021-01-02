@@ -69,6 +69,17 @@ namespace MTCG.cards
             UserDeckCards(user, deck);
         }
 
+        public string ShowShop()
+        {
+            return _cdb.ShowShop(CData);
+        }
+
+        public bool BuyCard(string user, int coins, int packId, int[] cardArray)
+        {
+            return _cdb.BuyCard(user, coins, packId, cardArray);
+        }
+
+
 
     }
 }
