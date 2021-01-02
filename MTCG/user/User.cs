@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using MTCG.cards;
 using MTCG.user.enums;
 using MTCG.database;
@@ -136,6 +137,39 @@ namespace MTCG.user
         public void ShowTrades()
         {
             Console.WriteLine(_cData.ShowTrades());
+        }
+
+        public bool InsertInTradeList(int giveCardId, int wantCardId)
+        {
+            if (giveCardId == wantCardId)
+            {
+                return false;
+            }
+
+            return _cData.InsertInTradeList(Username, giveCardId, wantCardId);
+        }
+
+        public bool TradeCard(string dealUser, int wantCardId)
+        {
+            int[] cardArray = new int[20000];
+            int i = 0;
+            foreach (KeyValuePair<int, Card> kvp in Stack)
+            {
+                cardArray[i] = kvp.Value.CardId;
+                i++;
+            }
+            foreach (KeyValuePair<int, Card> kvp in Deck)
+            {
+                cardArray[i] = kvp.Value.CardId;
+                i++;
+            }
+
+            if (cardArray.Contains(wantCardId))
+            {
+                return _cData.TradeCard(Username, dealUser, wantCardId);
+            }
+
+            return false;
         }
 
         public void Logout()

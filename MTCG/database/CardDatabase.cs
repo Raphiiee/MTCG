@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Data.SqlClient;
 using MTCG.cards;
 using MTCG.cards.enums;
 using MTCG.cards.monster;
@@ -212,9 +213,113 @@ namespace MTCG.database
             return trades;
         }
 
+        public bool InsertInTradeList(string user, int giveCardId, int wantCardId)
+        {
+            string sqlSearchCard = "SELECT card_id FROM stack WHERE username=@u";
+            string sqlLockCard = "UPDATE stack SET isindeck=false, islocked=true WHERE username=@u AND card_id=@ci";
+            string sqlInsertInTradeList = "INSERT INTO trade (username, wanted_id, give_id) VALUES (@u,@wi,@gi)";
+            bool cardIsInStack = false;
 
+            _conn.Open();
+            NpgsqlCommand cmd = new NpgsqlCommand(sqlSearchCard, _conn);
+            cmd.Parameters.AddWithValue("u", user);
+            cmd.Prepare();
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                if (giveCardId == reader.GetInt32(0))
+                {
+                    cardIsInStack = true;
+                }
+            }
+            _conn.Close();
 
+            if (cardIsInStack)
+            {
+                _conn.Open();
+                cmd = new NpgsqlCommand(sqlLockCard, _conn);
+                cmd.Parameters.AddWithValue("u", user);
+                cmd.Parameters.AddWithValue("ci", giveCardId);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+                _conn.Close();
 
+                _conn.Open();
+                cmd = new NpgsqlCommand(sqlInsertInTradeList, _conn);
+                cmd.Parameters.AddWithValue("u", user);
+                cmd.Parameters.AddWithValue("wi", wantCardId);
+                cmd.Parameters.AddWithValue("gi", giveCardId);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+                _conn.Close();
+
+            }
+
+            return false;
+        }
+
+        public bool TradeCard(string user, string dealUser, int wantCardId)
+        {
+            string sqlGetTradeInfo = "SELECT give_id FROM trade WHERE username=@u AND wanted_id=@wi";
+            string sqlDeleteCardFromStack = "DELETE FROM stack WHERE username=@u AND card_id=@ci";
+            string sqlInsertCardIntoStack = "INSERT INTO stack (username, card_id) VALUES (@u,@ci)";
+            string sqlDeleteTrade = "DELETE FROM trade WHERE username=@u AND wanted_id=@wi";
+            int giveCardId = 0;
+
+            _conn.Open();
+            NpgsqlCommand cmd = new NpgsqlCommand(sqlGetTradeInfo, _conn);
+            cmd.Parameters.AddWithValue("u", dealUser);
+            cmd.Parameters.AddWithValue("wi", wantCardId);
+            cmd.Prepare();
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                giveCardId = reader.GetInt32(0);
+            }
+            _conn.Close();
+
+            _conn.Open();
+            cmd = new NpgsqlCommand(sqlDeleteCardFromStack, _conn);
+            cmd.Parameters.AddWithValue("u", dealUser);
+            cmd.Parameters.AddWithValue("ci", giveCardId);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+            _conn.Close();
+
+            _conn.Open();
+            cmd = new NpgsqlCommand(sqlDeleteCardFromStack, _conn);
+            cmd.Parameters.AddWithValue("u", user);
+            cmd.Parameters.AddWithValue("ci", wantCardId);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+            _conn.Close();
+
+            _conn.Open();
+            cmd = new NpgsqlCommand(sqlInsertCardIntoStack, _conn);
+            cmd.Parameters.AddWithValue("u", dealUser);
+            cmd.Parameters.AddWithValue("ci", wantCardId);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+            _conn.Close();
+
+            _conn.Open();
+            cmd = new NpgsqlCommand(sqlInsertCardIntoStack, _conn);
+            cmd.Parameters.AddWithValue("u", user);
+            cmd.Parameters.AddWithValue("ci", giveCardId);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+            _conn.Close();
+
+            _conn.Open();
+            cmd = new NpgsqlCommand(sqlDeleteTrade, _conn);
+            cmd.Parameters.AddWithValue("u", dealUser);
+            cmd.Parameters.AddWithValue("wi", wantCardId);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+            _conn.Close();
+
+            return true;
+        }
 
 
     }

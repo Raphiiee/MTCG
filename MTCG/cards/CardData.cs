@@ -84,5 +84,15 @@ namespace MTCG.cards
             return _cdb.ShowTrades(CData);
         }
 
+        public bool InsertInTradeList(string user, int giveCardId, int wantCardId)
+        {
+            return _cdb.InsertInTradeList(user, giveCardId, wantCardId);
+        }
+
+        public bool TradeCard(string user, string dealUser, int wantCardId)
+        {
+            return _cdb.TradeCard(user, dealUser, wantCardId);
+        }
+
     }
 }

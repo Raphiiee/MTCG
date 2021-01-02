@@ -40,8 +40,9 @@ namespace MTCG
             user.PrintDeckCards();
             user.Logout();*/
 
-            User user = new User("FEST", "fest");
+            User user = new User("test", "test");
             user.LoadCards();
+            user.TradeCard("fest", 222);
             user.ShowTrades();
             /*user.PrintStackCards();
             user.PrintDeckCards();
