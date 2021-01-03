@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using MTCG.battle;
 using MTCG.cards;
 using MTCG.database;
@@ -40,9 +41,11 @@ namespace MTCG
             user.PrintDeckCards();
             user.Logout();*/
 
-            User user = new User("test", "test");
+            /*User user = new User("test", "test");
             user.LoadCards();
-            user.ShowLeaderBoard();
+            //user.ShowLeaderBoard();
+            user.ShowUserStats();
+            //user.BuyCard(3);
             /*user.TradeCard("fest", 222);
             user.ShowTrades();
             /*user.PrintStackCards();
@@ -58,6 +61,15 @@ namespace MTCG
             /*BattleHandler battle = new BattleHandler();
 
             battle.StartBattle("test", "fest");*/
+
+            Thread t = new Thread(delegate ()
+            {
+                // replace the IP with your system IP Address...
+                Server myserver = new Server("127.0.0.1", 10001);
+            });
+            t.Start();
+
+            Console.WriteLine("Server Started...!");
 
         }
     }

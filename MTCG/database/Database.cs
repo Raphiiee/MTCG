@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Npgsql;
 using MTCG.cards.enums;
 using MTCG.user.enums;
@@ -178,6 +179,7 @@ namespace MTCG.database
             try
             {
                 string sql;
+                string sqls = "";
                 if (property == CoinProperty.Load)
                 {
                     sql = "SELECT coins FROM \"user\" WHERE username=@u LIMIT 1";
@@ -185,10 +187,12 @@ namespace MTCG.database
                 else if (property == CoinProperty.Increase)
                 {
                    sql = "UPDATE \"user\" SET coins=coins+@c WHERE username=@u";
+                   sqls = "UPDATE \"user\" SET gainedcoins=gainedcoins+@c WHERE username=@u";
                 }
                 else if (property == CoinProperty.Decrease)
                 {
                    sql = "UPDATE \"user\" SET coins=coins-@c WHERE username=@u";
+                   sqls = "UPDATE \"user\" SET spendcoins=spendcoins+@c WHERE username=@u";
                 }
                 else
                 {
@@ -204,6 +208,16 @@ namespace MTCG.database
                    cmd.Parameters.AddWithValue("c", coinValue);
                    cmd.Prepare();
                    cmd.ExecuteNonQuery();
+                   _conn.Close();
+
+                   _conn.Open();
+                   cmd = new NpgsqlCommand(sqls, _conn);
+                   cmd.Parameters.AddWithValue("u", user); 
+                   cmd.Parameters.AddWithValue("c", coinValue);
+                   cmd.Prepare();
+                   cmd.ExecuteNonQuery();
+                   _conn.Close();
+                    return 0;
                 }
 
                 cmd.Prepare();
@@ -243,6 +257,26 @@ namespace MTCG.database
             return leaderBoard;
         }
 
+        public string ShowUserStats(string user)
+        {
+            string sqlLeaderBoard = "SELECT username, wins, lose, score, coins, spendcoins, gainedcoins FROM \"user\" WHERE username=@u ORDER BY score DESC";
+            string userStats = "";
+
+            _conn.Open();
+            NpgsqlCommand cmd = new NpgsqlCommand(sqlLeaderBoard, _conn);
+            cmd.Parameters.AddWithValue("u", user);
+            cmd.Prepare();
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                userStats += $"\nYour Stats:\n\tWins:{reader.GetInt32(1)} Lose:{reader.GetInt32(2)} Score:{reader.GetInt32(3)} \n\tCoins:{reader.GetValue(4)} SpendCoins:{reader.GetValue(5)} GainedCoins:{reader.GetValue(6)}";
+            }
+
+            _conn.Close();
+
+            return userStats;
+        }
+
         public bool UsernameTaken(string user)
         {
             int counter = 0;
@@ -268,15 +302,16 @@ namespace MTCG.database
             
         }
 
-        public void RegisterUser(string user, string pwd)
+        public void RegisterUser(string user, string pwd, int token)
         {
             try
             {
                _conn.Open();
-                string sql = "INSERT INTO \"user\" (username, pwd) VALUES (@u,@p)";
+                string sql = "INSERT INTO \"user\" (username, pwd, token) VALUES (@u,@p,@t)";
                 var register = new NpgsqlCommand(sql, _conn);
                 register.Parameters.AddWithValue("u", user);
                 register.Parameters.AddWithValue("p", pwd);
+                register.Parameters.AddWithValue("p", token);
                 register.Prepare();
                 register.ExecuteNonQuery();
             }

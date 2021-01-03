@@ -9,8 +9,8 @@ namespace MTCG.user
 {
     public class User
     {
-        public string Username { get; }
-        private string _password;
+        public string Username { get; set; }
+        public string Password { get; set; }
         public int Coins { get; private set; }
         public int Score { get; private set; }
         public Dictionary<int, Card> Stack = new Dictionary<int, Card>();
@@ -20,20 +20,20 @@ namespace MTCG.user
         private Database _db = new Database();
         CardData _cData = new CardData();
 
-        public User(string username, string pwd)
+        public User()
         {
-            _password = pwd;
-            Username = username.ToLower();
+            
         }
 
         public void LoginOrCreate()
         {
+            Username = Username.ToLower();
 
             if (_db.UsernameTaken(Username))
             {
-                if (_db.Login(Username, _password))
+                if (_db.Login(Username, Password))
                 {
-                    _token = _r.Next(100000000, 999999999);
+                    
                     Console.WriteLine($"User Logged in {Username}");
 
                     Coins = _db.CoinHandler(Username, CoinProperty.Load, 0);
@@ -41,7 +41,6 @@ namespace MTCG.user
 
                     Console.WriteLine(Coins);
                     Console.WriteLine(Score);
-                    Console.WriteLine(_token);
                 }
                 else
                 {
@@ -50,7 +49,8 @@ namespace MTCG.user
             }
             else
             {
-                _db.RegisterUser(Username, _password);
+                _token = _r.Next(100000, 999999);
+                _db.RegisterUser(Username, Password, _token);
                 Console.WriteLine("User Registered\n Please Login");
             }
         }
@@ -175,6 +175,16 @@ namespace MTCG.user
         public void ShowLeaderBoard()
         {
             Console.WriteLine(_db.ShowLeaderBoard());
+        }
+
+        public void ShowUserStats()
+        {
+            Console.WriteLine(_db.ShowUserStats(Username));
+        }
+
+        public void WatchAds()
+        {
+            _db.CoinHandler(Username, CoinProperty.Increase, 50);
         }
 
         public void Logout()

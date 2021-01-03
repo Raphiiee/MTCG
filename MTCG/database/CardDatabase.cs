@@ -127,6 +127,7 @@ namespace MTCG.database
             string sqlShowShop = "SELECT card_id, \"cost\" FROM shop WHERE pack_id=@pi ORDER BY card_id";
             string sqlBuyCard = "INSERT INTO stack (username, card_id) VALUES (@u,@ci)";
             string sqlSubtractCoins = "UPDATE \"user\" SET COINS=COINS-@cv WHERE username=@u";
+            string sqlSpendCoins = "UPDATE \"user\" SET spendcoins=spendcoins+@cv WHERE username=@u";
             int coinValue = 0;
             int[] cardPackCardIds = new int[6];
             int i = 0;
@@ -181,8 +182,17 @@ namespace MTCG.database
             cmd.Parameters.AddWithValue("cv", coinValue);
             cmd.Prepare();
             cmd.ExecuteNonQuery();
-
             _conn.Close();
+
+            _conn.Open();
+            cmd = new NpgsqlCommand(sqlSpendCoins, _conn);
+            cmd.Parameters.AddWithValue("u", user);
+            cmd.Parameters.AddWithValue("cv", coinValue);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+            _conn.Close();
+
+
             return true;
         }
 
