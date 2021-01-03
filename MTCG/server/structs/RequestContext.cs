@@ -8,6 +8,7 @@ namespace MTCG.DB.structs
         public string Version;
         public AllowedMethods Method;
         public AllowedPaths Path;
+        public string Authorization;
         public string Message;
     }
 }

@@ -85,7 +85,6 @@ namespace MTCG.database
                 stackCardsArray[i] = reader.GetInt32(0);
                 i++;
             }
-            i = 0;
             _conn.Close();
 
         }

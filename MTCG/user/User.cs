@@ -13,9 +13,10 @@ namespace MTCG.user
         public string Password { get; set; }
         public int Coins { get; private set; }
         public int Score { get; private set; }
+        public bool IsLoggedIn { get; private set; }
         public Dictionary<int, Card> Stack = new Dictionary<int, Card>();
         public Dictionary<int, Card> Deck  = new Dictionary<int, Card>();
-        private int _token;
+        public int Token;
         private Random _r = new Random();
         private Database _db = new Database();
         CardData _cData = new CardData();
@@ -25,7 +26,7 @@ namespace MTCG.user
             
         }
 
-        public void LoginOrCreate()
+        public int LoginOrCreate()
         {
             Username = Username.ToLower();
 
@@ -36,23 +37,48 @@ namespace MTCG.user
                     
                     Console.WriteLine($"User Logged in {Username}");
 
-                    Coins = _db.CoinHandler(Username, CoinProperty.Load, 0);
-                    Score = _db.ScoreHandler(Username, ScoreProperty.Load);
-
-                    Console.WriteLine(Coins);
-                    Console.WriteLine(Score);
+                    LoadStats();
+                    IsLoggedIn = true;
+                    return 200;
                 }
                 else
                 {
                     Console.WriteLine("PWD or User Wrong");
+                    return 406;
                 }
             }
             else
             {
-                _token = _r.Next(100000, 999999);
-                _db.RegisterUser(Username, Password, _token);
+                Token = _r.Next(100000, 999999);
+                _db.RegisterUser(Username, Password, Token);
                 Console.WriteLine("User Registered\n Please Login");
+                return 201;
             }
+        }
+
+        public void LoadStats()
+        {
+            Coins = _db.CoinHandler(Username, CoinProperty.Load, 0);
+            Score = _db.ScoreHandler(Username, ScoreProperty.Load);
+            Token = _db.GetToken(Username);
+
+            Console.WriteLine(Coins);
+            Console.WriteLine(Score);
+            Console.WriteLine(Token);
+        }
+
+        public bool AuthorizeClient(int token)
+        {
+            if (_db.AuthorizeClient(token))
+            {
+                Username = _db.GetUserNameFromToken(token);
+                IsLoggedIn = true;
+                Console.WriteLine(Username);
+                LoadStats();
+                return true;
+            }
+
+            return false;
         }
 
         public void LoadCards()

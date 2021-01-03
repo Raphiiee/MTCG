@@ -311,7 +311,7 @@ namespace MTCG.database
                 var register = new NpgsqlCommand(sql, _conn);
                 register.Parameters.AddWithValue("u", user);
                 register.Parameters.AddWithValue("p", pwd);
-                register.Parameters.AddWithValue("p", token);
+                register.Parameters.AddWithValue("t", token);
                 register.Prepare();
                 register.ExecuteNonQuery();
             }
@@ -365,7 +365,104 @@ namespace MTCG.database
              _conn.Close();
              return false;
         }
-          
+
+        public int GetToken(string username)
+        {
+            int token = 0;
+            try
+            {
+                string sqlToken = "SELECT token FROM \"user\" WHERE username=@u LIMIT 1;";
+
+
+                _conn.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(sqlToken, _conn);
+                cmd.Parameters.AddWithValue("u", username);
+                cmd.Prepare();
+                NpgsqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    token = reader.GetInt32(0);
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            _conn.Close();
+            return token;
+        }
+
+        // dotnet_code_quality_unused_parameters = non_public
+        public bool AuthorizeClient(int token)
+        {
+            string user = "";
+            try
+            {
+                string sqlToken = "SELECT username FROM \"user\" WHERE \"token\"=@t LIMIT 1;";
+                
+
+                _conn.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(sqlToken, _conn);
+                cmd.Parameters.AddWithValue("t", token);
+                cmd.Prepare();
+                NpgsqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    user = reader.GetString(0);
+                }
+
+                
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            _conn.Close();
+
+            if (user != "")
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public string GetUserNameFromToken(int token)
+        {
+            string user = "sample";
+            try
+            {
+                string sqlToken = "SELECT username FROM \"user\" WHERE \"token\"=@t LIMIT 1;";
+
+                _conn.Open();
+                NpgsqlCommand cmd = new NpgsqlCommand(sqlToken, _conn);
+                cmd.Parameters.AddWithValue("t", token);
+                cmd.Prepare();
+                NpgsqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    user = reader.GetString(0);
+                }
+
+                _conn.Close();
+                return user;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            _conn.Close();
+            return user;
+
+        }
+
         public void Logout(string username)
         {
             string setUserOffline = "UPDATE \"user\" SET online='false' WHERE username=@p ;";

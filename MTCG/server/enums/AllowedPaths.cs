@@ -10,6 +10,7 @@
         Score,
         Battles,
         Tradings,
+        Logout,
         ErrorNotSet
 
     }

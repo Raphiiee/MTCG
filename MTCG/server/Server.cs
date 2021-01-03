@@ -69,15 +69,25 @@ namespace MTCG.server
                     {
                         tcp.Login();
                     }
-                    
+                    else if (tcp.AuthorizationHeader())
+                    {
+                        if (tcp.AuthorizeClient())
+                        {
+                            if (tcp.GetPath() == AllowedPaths.Logout)
+                            {
+                                tcp.Logout();
+                            }
+                        }
+                    }
                     else
                     {
+                        tcp.WrongPath();
                         Console.WriteLine("Falscher Pfad");
                     }
 
                     tcp.MakeHeader();
 
-                    Byte[] reply = System.Text.Encoding.ASCII.GetBytes(tcp.GetHeader());
+                    Byte[] reply = Encoding.ASCII.GetBytes(tcp.GetHeader());
                     stream.Write(reply, 0, reply.Length);
                     //writer.Write("\r\n");
                     stream.Flush();
