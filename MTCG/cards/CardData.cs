@@ -74,7 +74,7 @@ namespace MTCG.cards
             return _cdb.ShowShop(CData);
         }
 
-        public bool BuyCard(string user, int coins, int packId, int[] cardArray)
+        public int BuyCard(string user, int coins, int packId, int[] cardArray)
         {
             return _cdb.BuyCard(user, coins, packId, cardArray);
         }
@@ -92,6 +92,11 @@ namespace MTCG.cards
         public bool TradeCard(string user, string dealUser, int wantCardId)
         {
             return _cdb.TradeCard(user, dealUser, wantCardId);
+        }
+
+        public int DeleteTradeDeal(string user, int wantCardId)
+        {
+            return _cdb.DeleteTradeDeal(user, wantCardId);
         }
 
     }

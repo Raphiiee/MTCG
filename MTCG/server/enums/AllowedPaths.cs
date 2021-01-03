@@ -8,9 +8,10 @@
         Deck,
         Stats,
         Score,
-        Battles,
+        Battle,
         Tradings,
         Logout,
+        WatchAds,
         ErrorNotSet
 
     }

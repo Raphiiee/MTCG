@@ -86,62 +86,66 @@ namespace MTCG.user
             _cData.UserCards(Username, Stack, Deck);
         }
 
-        public void PrintStackCards()
+        public bool CardsInStack(int[] cardIds)
         {
+            int i = 0;
             foreach (KeyValuePair<int, Card> kvp in Stack)
             {
-                Console.WriteLine("Key = {0}, Card = {1} {2} {3} {4} {5} {6}", kvp.Key, kvp.Value.CardType, kvp.Value.Element, kvp.Value.CardDamage, kvp.Value.CardName, kvp.Value.CardProperty, kvp.Value.CardId);
+                if(cardIds.Contains(kvp.Value.CardId))
+                {
+                    i++;
+                }
             }
 
-            Console.WriteLine($"Cards: {Stack.Count}");
-            Console.WriteLine("Stack Cards Printed");
-        }
-
-        public void PrintDeckCards()
-        {
             foreach (KeyValuePair<int, Card> kvp in Deck)
             {
-                Console.WriteLine("Key = {0}, Card = {1} {2} {3} {4} {5} {6}", kvp.Key, kvp.Value.CardType, kvp.Value.Element, kvp.Value.CardDamage, kvp.Value.CardName, kvp.Value.CardProperty, kvp.Value.CardId);
+                if (cardIds.Contains(kvp.Value.CardId))
+                {
+                    i++;
+                }
             }
 
-            Console.WriteLine($"Cards: {Deck.Count}");
-            Console.WriteLine("Deck Cards Printed");
-        }
-
-        public bool SwapCard(int stackCardId)
-        {
-            Card tempCard;
-            int cardsInDeck = Deck.Count;
-            for (int i = 0; i < Stack.Count; i++)
+            if (i == 4)
             {
-                if (Stack.TryGetValue(i, out tempCard) && cardsInDeck <= 3)
-                {
-                    _db.SwapCard(Username, stackCardId);
-                    LoadCards();
-                    return true;
-                }
-
-                if (Stack.TryGetValue(i, out tempCard) && cardsInDeck >= 4)
-                {
-                    Deck.TryGetValue(Deck.Count - 1, out tempCard);
-                    int lastCardIdInDeck = tempCard.CardId;
-
-                    _db.SwapCard(Username, stackCardId, lastCardIdInDeck);
-                    LoadCards();
-                    return true;
-                }
+                return true;
             }
 
             return false;
         }
 
-        public void ShowShop()
+        public string PrintStackCards()
         {
-            Console.WriteLine(_cData.ShowShop());
-            
+            string stackCards = "";
+            foreach (KeyValuePair<int, Card> kvp in Stack)
+            {
+                stackCards += $"CardID {kvp.Value.CardId} |Card = {kvp.Value.CardType} {kvp.Value.Element} {kvp.Value.CardDamage} {kvp.Value.CardName} {kvp.Value.CardProperty}";
+            }
+
+            return stackCards;
         }
 
-        public bool BuyCard(int packId)
+        public string PrintDeckCards()
+        {
+            string deckCards = "";
+            foreach (KeyValuePair<int, Card> kvp in Deck)
+            {
+                deckCards += $"CardID {kvp.Value.CardId} |Card = {kvp.Value.CardType} {kvp.Value.Element} {kvp.Value.CardDamage} {kvp.Value.CardName} {kvp.Value.CardProperty}";
+            }
+
+            return deckCards;
+        }
+
+        public int SwapCard(int[] deckCardIds)
+        {
+            return _db.SwapCard(Username, deckCardIds);
+        }
+
+        public string ShowShop()
+        {
+            return _cData.ShowShop();
+        }
+
+        public int BuyCard(int packId)
         {
             int[] cardArray = new int[20000];
             Array.Fill(cardArray, -1);
@@ -160,9 +164,9 @@ namespace MTCG.user
             return _cData.BuyCard(Username, _db.CoinHandler(Username, CoinProperty.Load), packId, cardArray);
         }
 
-        public void ShowTrades()
+        public string ShowTrades()
         {
-            Console.WriteLine(_cData.ShowTrades());
+            return _cData.ShowTrades();
         }
 
         public bool InsertInTradeList(int giveCardId, int wantCardId)
@@ -198,19 +202,25 @@ namespace MTCG.user
             return false;
         }
 
-        public void ShowLeaderBoard()
+        public int DeleteTradeDeal(int wantCardId)
         {
-            Console.WriteLine(_db.ShowLeaderBoard());
+            return _cData.DeleteTradeDeal(Username,wantCardId);
         }
 
-        public void ShowUserStats()
+        public string ShowLeaderBoard()
         {
-            Console.WriteLine(_db.ShowUserStats(Username));
+            return _db.ShowLeaderBoard();
+        }
+
+        public string ShowUserStats()
+        {
+            return _db.ShowUserStats(Username);
         }
 
         public void WatchAds()
         {
             _db.CoinHandler(Username, CoinProperty.Increase, 50);
+
         }
 
         public void Logout()

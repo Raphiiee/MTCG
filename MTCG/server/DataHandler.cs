@@ -104,9 +104,9 @@ namespace MTCG.server
                 {
                     _request.Path = AllowedPaths.Score;
                 }
-                else if (firstSplit[1].Contains("BATTLES"))
+                else if (firstSplit[1].Contains("BATTLE"))
                 {
-                    _request.Path = AllowedPaths.Battles;
+                    _request.Path = AllowedPaths.Battle;
                 }
                 else if (firstSplit[1].Contains("TRADINGS"))
                 {
@@ -115,6 +115,10 @@ namespace MTCG.server
                 else if (firstSplit[1].Contains("LOGOUT"))
                 {
                     _request.Path = AllowedPaths.Logout;
+                }
+                else if (firstSplit[1].Contains("WATCHADS"))
+                {
+                    _request.Path = AllowedPaths.WatchAds;
                 }
 
                 _request.Version = firstSplit[2];
@@ -141,9 +145,6 @@ namespace MTCG.server
                         _request.Message += dataStrings[i];
                         _request.Message += "\n";
                     }
-                    
-
-                    
                 }
 
                 return;
@@ -231,202 +232,167 @@ namespace MTCG.server
             return isTokenAcceptable;
         }
 
-        public void AppendMessage(List<string> messageQue)
+        public void ShowStats()
         {
-            messageQue.Add(_request.Message.Trim());
-
-            _response.Status = "201 Created\n";
-            _response.Message = "Anfrage wurde Erfolgreich bearbeitet";
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-        }
-
-
-        public void GetAllMessages(List<string> messageQue)
-        {
-            string allMessages = "";
-
-            if (messageQue.Count <= 0)
-            {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Es sind keine Nachrichten vorhanden!";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Es sind keine Nachrichten vorhanden!");
-                return;
-            }
-
-            foreach (var message in messageQue)
-            {
-                allMessages += message + "\n";
-            }
+            string userStats = user.ShowUserStats();
 
             _response.Status = "200 OK\n";
-            _response.Message = allMessages;
+            _response.Message = userStats;
             _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
         }
 
-
-        /*public void GetMessage(List<string> messageQue)
+        public void ShowLeaderBoard()
         {
-            string[] pathArray = _request.Path.Split("/");
+            string leaderBoard = user.ShowLeaderBoard();
 
-            if (pathArray[2].Length == 0)
+            _response.Status = "200 OK\n";
+            _response.Message = leaderBoard;
+            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+        }
+
+        public void ShowShop()
+        {
+            string shop = user.ShowShop();
+
+            _response.Status = "200 OK\n";
+            _response.Message = shop;
+            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+        }
+
+        public void BuyCardPack()
+        {
+            int packId = 0;
+            var definitionPack = new {PackID = ""};
+            var sPackId = JsonConvert.DeserializeAnonymousType(_request.Message, definitionPack);
+
+            packId = Int32.Parse(definitionPack.PackID);
+            //packId = Int32.Parse(sPackId.PackID);
+
+            int msgCode = user.BuyCard(packId);
+
+            if (msgCode == 200)
+            {
+                _response.Status = "200 OK\n";
+                _response.Message = "Karten wurden hinzugefügt";
+                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+            }
+            else if (msgCode == 406)
             {
                 _response.Status = "406 Not Acceptable\n";
-                _response.Message = "Kein Index";
+                _response.Message = "Zu wenig Coins";
                 _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
 
-                Console.WriteLine("Kein Index");
-                return;
             }
-
-            int messageNumber = int.Parse(pathArray[2]) - 1;
-
-            if (messageQue.Count <= 0)
+            else if (msgCode == 409)
             {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Es sind keine Nachrichten vorhanden!";
+                _response.Status = "409 Conflict\n";
+                _response.Message = "Alle Karten von diesem Pack schon vorhanden";
                 _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
 
-                Console.WriteLine("Es sind keine Nachrichten vorhanden!");
-                return;
             }
-            if (messageQue.Count <= messageNumber)
-            {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Es gibt noch nicht so viele Messages";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Es gibt noch nicht so viele Messages");
-                return;
-            }
-            if (messageNumber < 0)
-            {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Index nicht vorhanden";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Index nicht vorhanden");
-                return;
-            }
-
-            _response.Status = "200 OK\n";
-            _response.Message = messageQue[messageNumber];
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-            Console.WriteLine("GET erfolgreich gegettet");
-        }
-
-
-        public void UpdateMessage(List<string> messageQue)
-        {
-            string[] pathArray = _request.Path.Split("/");
-
-            if (pathArray[2].Length == 0)
-            {
-                _response.Status = "406 Not Acceptable\n";
-                _response.Message = "Kein Index";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Kein Index");
-                return;
-            }
-
-            int messageNumber = int.Parse(pathArray[2]) - 1;
-
-            if (messageQue.Count <= 0)
-            {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Es sind keine Nachrichten vorhanden!";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Es sind keine Nachrichten vorhanden!");
-                return;
-            }
-
-            if (messageQue.Count <= messageNumber)
-            {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Es gibt noch nicht so viele Messages";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Es gibt noch nicht so viele Messages");
-                return;
-            }
-            if (messageNumber < 0)
-            {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Index nicht vorhanden";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Index Null nicht vorhanden");
-                return;
-            }
-
-            messageQue[messageNumber] = _request.Message.Trim();
-
-            _response.Status = "200 OK\n";
-            _response.Message = "Message erfolgreich Aktualisiert";
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
 
         }
 
-
-        public void DeleteMessage(List<string> messageQue)
+        public void ShowTrades()
         {
-            string[] pathArray = _request.Path.Split("/");
-
-            if (pathArray[2].Length == 0)
-            {
-                _response.Status = "406 Not Acceptable\n";
-                _response.Message = "Kein Index";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Kein Index");
-                return;
-            }
-
-            int messageNumber = int.Parse(pathArray[2]) - 1;
-
-            if (messageQue.Count <= 0)
-            {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Es sind keine Nachrichten vorhanden!";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Es sind keine Nachrichten vorhanden!");
-                return;
-            }
-
-            if (messageQue.Count <= messageNumber)
-            {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Es gibt noch nicht so viele Messages";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Es gibt noch nicht so viele Messages");
-                return;
-            }
-            if (messageNumber < 0)
-            {
-                _response.Status = "404 Not Found\n";
-                _response.Message = "Index nicht vorhanden";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
-
-                Console.WriteLine("Index Null nicht vorhanden");
-                return;
-            }
-
-            messageQue.RemoveAt(messageNumber);
+            string trades = user.ShowTrades();
 
             _response.Status = "200 OK\n";
-            _response.Message = "Erfolgreich gelöscht";
+            _response.Message = trades;
             _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+        }
 
-        }*/
+        public void ShowAllCards()
+        {
+            user.LoadCards();
+            string stackCards = user.PrintStackCards();
+            string deckCards = user.PrintDeckCards();
+            stackCards += "\n_____________Karten im Deck_____________";
+            stackCards += deckCards;
 
+            _response.Status = "200 OK\n";
+            _response.Message = stackCards;
+            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+        }
+
+        public void ShowDeckCards()
+        {
+            user.LoadCards();
+            string deckCards = "\n_____________Karten im Deck_____________";
+            deckCards += user.PrintDeckCards();
+
+            _response.Status = "200 OK\n";
+            _response.Message = deckCards;
+            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+        }
+
+        public void ChangeDeckCards()
+        {
+            int msgCode = 0;
+            int[] deckCardIds = new int[4];
+            var definitionDeckJSON = new [] {new {PackID = ""}};
+            var sDeckCardIds = JsonConvert.DeserializeAnonymousType(_request.Message, definitionDeckJSON);
+
+            for (int i = 0; i < 4; i++)
+            {
+                deckCardIds[i] = Int32.Parse(sDeckCardIds[i].PackID);
+                if (deckCardIds[i] < 0)
+                {
+                    msgCode = 406; 
+                }
+            }
+
+            if (user.CardsInStack(deckCardIds))
+            {
+                msgCode = user.SwapCard(deckCardIds);
+            }
+            else
+            {
+                msgCode = 403; 
+            }
+
+            if (msgCode == 200)
+            {
+                _response.Status = "200 OK\n";
+                _response.Message = "Karten wurden hinzugefügt";
+                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+            }
+            else if (msgCode == 406)
+            {
+                _response.Status = "406 Not Acceptable\n";
+                _response.Message = "Es wurden zu wenige Karten ausgewählt";
+                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+
+            }
+            else if (msgCode == 403)
+            {
+                _response.Status = "403 Forbidden\n";
+                _response.Message = "Nicht alle CardIds sind im Besitz";
+                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+            }
+
+        }
+
+        public void DeleteTradeDeal()
+        {
+            int msgCode = 0;
+            int cardId = 0;
+            var definitionDelDeal = new { WantedId = "" };
+            var sCardId = JsonConvert.DeserializeAnonymousType(_request.Message, definitionDelDeal);
+
+            cardId = Int32.Parse(definitionDelDeal.WantedId);
+            //packId = Int32.Parse(sCardId.WantedId);
+
+            msgCode = user.DeleteTradeDeal(cardId);
+
+        }
+
+        public void WatchAds()
+        {
+            _response.Status = "200 OK\n";
+            _response.Message = "Hier könnte Ihre Werbung stehen";
+            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+        }
 
         public void MakeHeader()
         {

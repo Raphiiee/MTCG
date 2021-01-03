@@ -132,46 +132,40 @@ namespace MTCG.database
 
         }
 
-        public void SwapCard(string user, int stackCard, int deckCard = 0)
+        public int SwapCard(string user, int[] deckCardIds)
         {
             string sqlSetDeckCardTrue = "UPDATE stack SET isindeck=true WHERE username=@u AND card_id=@ci";
-            string sqlSetDeckCardFalse = "UPDATE stack SET isindeck=false WHERE username=@u AND card_id=@ci";
+            string sqlSetAllCardsFalse = "UPDATE stack SET isindeck=false WHERE username=@u";
 
             try
             {
                 _conn.Open();
 
-                if (deckCard == 0)
+                var register = new NpgsqlCommand(sqlSetAllCardsFalse, _conn);
+                register.Parameters.AddWithValue("u", user);
+                register.Prepare();
+                register.ExecuteNonQuery();
+                _conn.Close();
+
+                for (int i = 0; i < deckCardIds.Length; i++)
                 {
-                    var register = new NpgsqlCommand(sqlSetDeckCardTrue, _conn);
-                    register.Parameters.AddWithValue("u", user);
-                    register.Parameters.AddWithValue("ci", stackCard);
-                    register.Prepare();
-                    register.ExecuteNonQuery();
-                }
-                else
-                {
-                    var register = new NpgsqlCommand(sqlSetDeckCardFalse, _conn);
-                    register.Parameters.AddWithValue("u", user);
-                    register.Parameters.AddWithValue("ci", deckCard);
-                    register.Prepare();
-                    register.ExecuteNonQuery();
-                    
+                    _conn.Open();
                     register = new NpgsqlCommand(sqlSetDeckCardTrue, _conn);
                     register.Parameters.AddWithValue("u", user);
-                    register.Parameters.AddWithValue("ci", stackCard);
+                    register.Parameters.AddWithValue("ci", deckCardIds[i]);
                     register.Prepare();
                     register.ExecuteNonQuery();
+                    _conn.Close();
                 }
                 
-
-                _conn.Close();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
+
+            return 200;
         }
 
         public int CoinHandler(string user, CoinProperty property, int coinValue = 0)

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Data.SqlClient;
 using MTCG.cards;
 using MTCG.cards.enums;
-using MTCG.cards.monster;
 using Npgsql;
 
 namespace MTCG.database
@@ -121,7 +119,7 @@ namespace MTCG.database
             return shop;
         }
 
-        public bool BuyCard(string user, int coins, int packId, int[] cards)
+        public int BuyCard(string user, int coins, int packId, int[] cards)
         {
             string sqlShowShop = "SELECT card_id, \"cost\" FROM shop WHERE pack_id=@pi ORDER BY card_id";
             string sqlBuyCard = "INSERT INTO stack (username, card_id) VALUES (@u,@ci)";
@@ -147,8 +145,8 @@ namespace MTCG.database
                 }
 
                 if (coins - reader.GetInt32(1) < 0)
-                { 
-                    return false;
+                {
+                    return 406;
                 }
                 
             }
@@ -171,7 +169,7 @@ namespace MTCG.database
 
                 if (k >= 5)
                 {
-                    return false;
+                    return 409;
                 }
             }
 
@@ -190,9 +188,8 @@ namespace MTCG.database
             cmd.Prepare();
             cmd.ExecuteNonQuery();
             _conn.Close();
-
-
-            return true;
+            
+            return 200;
         }
 
         public string ShowTrades(Dictionary<int, Card> cardData)
@@ -328,6 +325,44 @@ namespace MTCG.database
             _conn.Close();
 
             return true;
+        }
+
+        public int DeleteTradeDeal(string user, int wantCardId)
+        {
+            string sqlGetGiveId = "SELECT give_id FROM trade WHERE username=@u AND wanted_id=@wi";
+            string sqlUnlockCard = "UPDATE FROM stack SET islocked=false WHERE username=@u AND card_id=@ci";
+            string sqlDeleteTradeDeal = "DELETE FROM trade WHERE username=@u AND wanted_id=@wi";
+            int giveCardId = 0;
+
+            _conn.Open();
+            var cmd = new NpgsqlCommand(sqlGetGiveId, _conn);
+            cmd.Parameters.AddWithValue("u", user);
+            cmd.Parameters.AddWithValue("wi", wantCardId);
+            cmd.Prepare(); 
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                giveCardId = reader.GetInt32(0);
+            }
+            _conn.Close();
+
+            _conn.Open();
+            cmd = new NpgsqlCommand(sqlUnlockCard, _conn);
+            cmd.Parameters.AddWithValue("u", user);
+            cmd.Parameters.AddWithValue("ci", giveCardId);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+            _conn.Close();
+
+            _conn.Open();
+            cmd = new NpgsqlCommand(sqlDeleteTradeDeal, _conn);
+            cmd.Parameters.AddWithValue("u", user);
+            cmd.Parameters.AddWithValue("wi", wantCardId);
+            cmd.Prepare();
+            cmd.ExecuteNonQuery();
+            _conn.Close();
+
+            return 200;
         }
 
 

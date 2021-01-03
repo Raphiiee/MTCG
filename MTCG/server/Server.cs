@@ -65,7 +65,7 @@ namespace MTCG.server
 
                     tcp.GetData(data);
 
-                    if (tcp.GetPath() == AllowedPaths.Users)
+                    if (tcp.GetPath() == AllowedPaths.Users && tcp.GetMethod() == AllowedMethods.POST)
                     {
                         tcp.Login();
                     }
@@ -73,10 +73,63 @@ namespace MTCG.server
                     {
                         if (tcp.AuthorizeClient())
                         {
-                            if (tcp.GetPath() == AllowedPaths.Logout)
+                            if (tcp.GetPath() == AllowedPaths.Logout && tcp.GetMethod() == AllowedMethods.POST)
                             {
                                 tcp.Logout();
                             }
+                            else if (tcp.GetPath() == AllowedPaths.Stats && tcp.GetMethod() == AllowedMethods.GET)
+                            {
+                                tcp.ShowStats();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.Score && tcp.GetMethod() == AllowedMethods.GET)
+                            {
+                                tcp.ShowLeaderBoard();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.TransactionsPackages && tcp.GetMethod() == AllowedMethods.GET)
+                            {
+                                tcp.ShowShop();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.TransactionsPackages && tcp.GetMethod() == AllowedMethods.POST)
+                            {
+                                tcp.BuyCardPack();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.Cards && tcp.GetMethod() == AllowedMethods.GET)
+                            {
+                                tcp.ShowAllCards();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.Deck && tcp.GetMethod() == AllowedMethods.GET)
+                            {
+                                tcp.ShowDeckCards();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.Deck && tcp.GetMethod() == AllowedMethods.PUT)
+                            {
+                                tcp.ChangeDeckCards();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.Battle && tcp.GetMethod() == AllowedMethods.GET)
+                            {
+                                
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.Tradings && tcp.GetMethod() == AllowedMethods.GET)
+                            {
+                                tcp.ShowTrades();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.Tradings && tcp.GetMethod() == AllowedMethods.POST)
+                            {
+                                //HIER WEITERMACHEN => tcp.TradeOrInsert();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.Tradings && tcp.GetMethod() == AllowedMethods.DELETE)
+                            {
+                                tcp.DeleteTradeDeal();
+                            }
+                            else if (tcp.GetPath() == AllowedPaths.WatchAds && tcp.GetMethod() == AllowedMethods.GET)
+                            {
+                                tcp.WatchAds();
+                            }
+                            else
+                            {
+                                tcp.WrongPath();
+                            }
+
                         }
                     }
                     else
