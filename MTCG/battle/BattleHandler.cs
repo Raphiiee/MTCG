@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
-using System.Reflection;
 using MTCG.cards;
 using MTCG.cards.enums;
 using MTCG.database;
@@ -18,100 +16,114 @@ namespace MTCG.battle
         private int _playerTwoWinCounter;
         private int _randomValueOne;
         private int _randomValueTwo;
-        private readonly Dictionary<int, Card> _playerDeckOne = new Dictionary<int, Card>();
-        private readonly Dictionary<int, Card> _playerDeckTwo = new Dictionary<int, Card>();
-        private readonly CardData _cData = new CardData();
-        private readonly Database _db = new Database();
-        private readonly Random _random = new Random();
+        private Dictionary<int, Card> _playerDeckOne = new Dictionary<int, Card>();
+        private Dictionary<int, Card> _playerDeckTwo = new Dictionary<int, Card>();
+        private CardData _cData = new CardData();
+        private Database _db = new Database();
+        private Random _random = new Random();
 
-        public void StartBattle(string userPo, string userPt)
+        public string StartBattle(string userPo, string userPt)
         {
             int i = 1;
-            LoadUserDecks(userPo, userPt);
-
-            for (; i < 101; i++)
+            if (LoadUserDecks(userPo, userPt))
             {
-                if (_playerDeckOne.Count <= 0 || _playerDeckTwo.Count <= 0)
+                for (; i < 101; i++)
                 {
-                    break;
+                    if (_playerDeckOne.Count <= 0 || _playerDeckTwo.Count <= 0)
+                    {
+                        break;
+                    }
+
+                    Card playerOneCard;
+                    Card playerTwoCard;
+
+                    Log += $"\n\n-------------Runde {i}-------------";
+                    Log += $"\n\t{userPo} has won {_playerOneWinCounter} Runden and has {_playerDeckOne.Count} Cards";
+                    Log += $"\n\t{userPt} has won {_playerTwoWinCounter} Runden and has {_playerDeckTwo.Count} Cards\n";
+
+                    _randomValueOne = _random.Next(0, _playerDeckOne.Count - 1);
+                    _randomValueTwo = _random.Next(0, _playerDeckTwo.Count - 1);
+
+                    
+                    _playerDeckOne.TryGetValue(_randomValueOne, out playerOneCard);
+                    _playerDeckTwo.TryGetValue(_randomValueTwo, out playerTwoCard);
+
+                    _playerOneDamage = playerOneCard.CardDamage;
+                    _playerTwoDamage = playerTwoCard.CardDamage;
+
+                    LogInfoCard(userPo, playerOneCard, _playerOneDamage);
+                    Effectiveness(playerOneCard, playerTwoCard, _playerOneDamage);
+                    DodgeAttack(playerOneCard, playerTwoCard, _playerOneDamage);
+
+                    LogInfoCard(userPt, playerTwoCard, _playerTwoDamage);
+                    Effectiveness(playerTwoCard, playerOneCard, _playerTwoDamage);
+                    DodgeAttack(playerTwoCard,playerOneCard,_playerTwoDamage);
+
+                    Log += "_______________________________________";
+
+                    if (_playerOneDamage > _playerTwoDamage)
+                    {
+                        _playerOneWinCounter++;
+                        TakeCardOver(_playerDeckOne,_playerDeckTwo, playerTwoCard);
+                        Log += $"\n{userPo} has won this Round with {_playerOneDamage}";
+                    }
+                    else if (_playerTwoDamage > _playerOneDamage)
+                    {
+                        _playerTwoWinCounter++;
+                        TakeCardOver(_playerDeckTwo, _playerDeckOne, playerOneCard);
+                        Log += $"\n{userPt} has won this Round with {_playerTwoDamage}";
+                    }
+                    else
+                    {
+                        Log += $"\n{userPo} and {userPt} has the same Damage points [TIE]";
+                    }
                 }
 
-                Card playerOneCard;
-                Card playerTwoCard;
-
-                Log += $"\n\n-------------Runde {i}-------------";
-                Log += $"\n\t{userPo} has won {_playerOneWinCounter} Runden and has {_playerDeckOne.Count} Cards";
-                Log += $"\n\t{userPt} has won {_playerTwoWinCounter} Runden and has {_playerDeckTwo.Count} Cards\n";
-
-                _randomValueOne = _random.Next(0, _playerDeckOne.Count - 1);
-                _randomValueTwo = _random.Next(0, _playerDeckTwo.Count - 1);
-
-                
-                _playerDeckOne.TryGetValue(_randomValueOne, out playerOneCard);
-                _playerDeckTwo.TryGetValue(_randomValueTwo, out playerTwoCard);
-
-                _playerOneDamage = playerOneCard.CardDamage;
-                _playerTwoDamage = playerTwoCard.CardDamage;
-
-                LogInfoCard(userPo, playerOneCard, _playerOneDamage);
-                Effectiveness(playerOneCard, playerTwoCard, _playerOneDamage);
-                DodgeAttack(playerOneCard, playerTwoCard, _playerOneDamage);
-
-                LogInfoCard(userPt, playerTwoCard, _playerTwoDamage);
-                Effectiveness(playerTwoCard, playerOneCard, _playerTwoDamage);
-                DodgeAttack(playerTwoCard,playerOneCard,_playerTwoDamage);
-
-                Log += "_______________________________________";
-
-                if (_playerOneDamage > _playerTwoDamage)
+                Log += "\n##################################";
+                if (i >= 100)
                 {
-                    _playerOneWinCounter++;
-                    TakeCardOver(_playerDeckOne,_playerDeckTwo, playerTwoCard);
-                    Log += $"\n{userPo} has won this Round with {_playerOneDamage}";
+                    // TIE
+                    Log += "\nKein Teilnehmer hat eindeutig Gewonnen => TIE";
+                    _db.ScoreHandler(userPo, ScoreProperty.Tie);
+                    _db.ScoreHandler(userPt, ScoreProperty.Tie);
                 }
-                else if (_playerTwoDamage > _playerOneDamage)
+                if (_playerOneWinCounter > _playerTwoWinCounter)
                 {
-                    _playerTwoWinCounter++;
-                    TakeCardOver(_playerDeckTwo, _playerDeckOne, playerOneCard);
-                    Log += $"\n{userPt} has won this Round with {_playerTwoDamage}";
-                }
-                else
+                    // PLayer One Wins
+                    Log += $"\n{userPo} hat Gewonnen!\n{userPt} hat verloren :0";
+                    _db.ScoreHandler(userPo, ScoreProperty.Win);
+                    _db.ScoreHandler(userPt, ScoreProperty.Lose);
+                } 
+                if (_playerTwoWinCounter > _playerOneWinCounter)
                 {
-                    Log += $"\n{userPo} and {userPt} has the same Damage points [TIE]";
+                    // Player Two Wins
+                    Log += $"\n{userPt} hat Gewonnen!\n{userPo} hat verloren :0";
+                    _db.ScoreHandler(userPt, ScoreProperty.Win);
+                    _db.ScoreHandler(userPo, ScoreProperty.Lose);
                 }
             }
 
-            Log += "\n##################################";
-            if (i >= 100)
-            {
-                // TIE
-                Log += "\nKein Teilnehmer hat eindeutig Gewonnen => TIE";
-                _db.ScoreHandler(userPo, ScoreProperty.Tie);
-                _db.ScoreHandler(userPt, ScoreProperty.Tie);
-            }
-            if (_playerOneWinCounter > _playerTwoWinCounter)
-            {
-                // PLayer One Wins
-                Log += $"\n{userPo} hat Gewonnen!\n{userPt} hat verloren :0";
-                _db.ScoreHandler(userPo, ScoreProperty.Win);
-                _db.ScoreHandler(userPt, ScoreProperty.Lose);
-            } 
-            if (_playerTwoWinCounter > _playerOneWinCounter)
-            {
-                // Player Two Wins
-                Log += $"\n{userPt} hat Gewonnen!\n{userPo} hat verloren :0";
-                _db.ScoreHandler(userPt, ScoreProperty.Win);
-                _db.ScoreHandler(userPo, ScoreProperty.Lose);
-            }
+            
 
             PrintLog();
 
+            return Log;
+
         }
 
-        public void LoadUserDecks(string userPo, string userPt)
+        public bool LoadUserDecks(string userPo, string userPt)
         {
-            _cData.UserDeckCards(userPo, _playerDeckOne);
-            _cData.UserDeckCards(userPt, _playerDeckTwo);
+            int deckCountPo = _cData.UserDeckCards(userPo, _playerDeckOne);
+            int deckCountPt = _cData.UserDeckCards(userPt, _playerDeckTwo);
+
+            if (deckCountPo < 2 || deckCountPt < 2)
+            {
+                Log += "Spiel wird abgebrochen, weil nicht genug Karten vorhanden sind";
+                return false;
+            }
+
+            return true;
+
         }
 
         public void Effectiveness(Card attackCard, Card defenderCard, int attackCardDamage)
@@ -271,6 +283,22 @@ namespace MTCG.battle
         public void PrintLog()
         {
             Console.WriteLine(Log);
+        }
+
+        public void ClearBattle()
+        {
+            Log = "";
+            _playerOneDamage = 0;
+            _playerTwoDamage = 0;
+            _playerOneWinCounter = 0;
+            _playerTwoWinCounter = 0;
+            _randomValueOne = 0;
+            _randomValueTwo = 0; 
+            _playerDeckOne = new Dictionary<int, Card>(); 
+            _playerDeckTwo = new Dictionary<int, Card>(); 
+            _cData = new CardData(); 
+            _db = new Database();
+            _random = new Random();
         }
 
 

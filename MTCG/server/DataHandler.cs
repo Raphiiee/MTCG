@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using MTCG.battle;
 using MTCG.DB.structs;
 using MTCG.server.enums;
 using MTCG.user;
@@ -11,7 +12,7 @@ namespace MTCG.server
     {
         private ResponseContext _response;
         private RequestContext _request;
-        private User user = new User();
+        private User _user = new User();
 
         public AllowedPaths GetPath()
         {
@@ -42,7 +43,6 @@ namespace MTCG.server
         {
             _response.Status = "403 Forbbiden\n";
             _response.Message = "wrong path";
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
         }
 
         public void GetData(string data)
@@ -158,36 +158,32 @@ namespace MTCG.server
 
         public void Login()
         {
-            user = JsonConvert.DeserializeObject<User>(_request.Message);
-            int statusCode = user.LoginOrCreate();
+            _user = JsonConvert.DeserializeObject<User>(_request.Message);
+            int statusCode = _user.LoginOrCreate();
 
             if (statusCode == 200)
             {
                 _response.Status = "200 OK\n";
-                _response.Message = $"Login Erfolgreich\ntoken:{user.Token}";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+                _response.Message = $"Login Erfolgreich\ntoken:{_user.Token}";
             }
             else if (statusCode == 201)
             {
                 _response.Status = "201 Created\n";
-                _response.Message = $"User wurde angelegt\nBitte einloggen\ntoken:{user.Token}";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+                _response.Message = $"User wurde angelegt\nBitte einloggen\ntoken:{_user.Token}";
             }
             else if (statusCode == 406 || statusCode == 0)
             {
                 _response.Status = "406 Not Acceptable\n";
                 _response.Message = "password or user wrong";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
             }
         }
 
         public void Logout()
         {
-            user.Logout();
+            _user.Logout();
 
             _response.Status = "200 OK\n";
-            _response.Message = $"User {user.Username} Logged Out";
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
+            _response.Message = $"User {_user.Username} Logged Out";
         }
 
 
@@ -199,7 +195,6 @@ namespace MTCG.server
             {
                 _response.Status = "406 Not Acceptable\n";
                 _response.Message = "Token Not Acceptable";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
                 return false;
             }
 
@@ -214,19 +209,17 @@ namespace MTCG.server
 
             token = Int32.Parse(sTocken);
 
-            bool isTokenAcceptable = user.AuthorizeClient(token);
+            bool isTokenAcceptable = _user.AuthorizeClient(token);
 
             if (isTokenAcceptable)
             {
                 _response.Status = "200 OK\n";
                 _response.Message = "Login Erfolgreich";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
             }
             else
             {
                 _response.Status = "406 Not Acceptable\n";
                 _response.Message = "Token Not Acceptable";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
             }
 
             return isTokenAcceptable;
@@ -234,33 +227,31 @@ namespace MTCG.server
 
         public void ShowStats()
         {
-            string userStats = user.ShowUserStats();
+            string userStats = _user.ShowUserStats();
 
             _response.Status = "200 OK\n";
             _response.Message = userStats;
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
         }
 
         public void ShowLeaderBoard()
         {
-            string leaderBoard = user.ShowLeaderBoard();
+            string leaderBoard = _user.ShowLeaderBoard();
 
             _response.Status = "200 OK\n";
             _response.Message = leaderBoard;
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
         }
 
         public void ShowShop()
         {
-            string shop = user.ShowShop();
+            string shop = _user.ShowShop();
 
             _response.Status = "200 OK\n";
             _response.Message = shop;
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
         }
 
         public void BuyCardPack()
         {
+            _user.LoadCards();
             int packId = 0;
             var definitionPack = new {PackID = ""};
             var sPackId = JsonConvert.DeserializeAnonymousType(_request.Message, definitionPack);
@@ -268,26 +259,23 @@ namespace MTCG.server
             packId = Int32.Parse(definitionPack.PackID);
             //packId = Int32.Parse(sPackId.PackID);
 
-            int msgCode = user.BuyCard(packId);
+            int msgCode = _user.BuyCard(packId);
 
             if (msgCode == 200)
             {
                 _response.Status = "200 OK\n";
                 _response.Message = "Karten wurden hinzugefügt";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
             }
             else if (msgCode == 406)
             {
                 _response.Status = "406 Not Acceptable\n";
                 _response.Message = "Zu wenig Coins";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
 
             }
             else if (msgCode == 409)
             {
                 _response.Status = "409 Conflict\n";
                 _response.Message = "Alle Karten von diesem Pack schon vorhanden";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
 
             }
 
@@ -295,43 +283,41 @@ namespace MTCG.server
 
         public void ShowTrades()
         {
-            string trades = user.ShowTrades();
+            string trades = _user.ShowTrades();
 
             _response.Status = "200 OK\n";
             _response.Message = trades;
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
         }
 
         public void ShowAllCards()
         {
-            user.LoadCards();
-            string stackCards = user.PrintStackCards();
-            string deckCards = user.PrintDeckCards();
+            _user.LoadCards();
+            string stackCards = _user.PrintStackCards();
+            string deckCards = _user.PrintDeckCards();
             stackCards += "\n_____________Karten im Deck_____________";
             stackCards += deckCards;
 
             _response.Status = "200 OK\n";
             _response.Message = stackCards;
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
         }
 
         public void ShowDeckCards()
         {
-            user.LoadCards();
+            _user.LoadCards();
             string deckCards = "\n_____________Karten im Deck_____________";
-            deckCards += user.PrintDeckCards();
+            deckCards += _user.PrintDeckCards();
 
             _response.Status = "200 OK\n";
             _response.Message = deckCards;
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
         }
 
         public void ChangeDeckCards()
         {
+            _user.LoadCards();
             int msgCode = 0;
             int[] deckCardIds = new int[4];
-            var definitionDeckJSON = new [] {new {PackID = ""}};
-            var sDeckCardIds = JsonConvert.DeserializeAnonymousType(_request.Message, definitionDeckJSON);
+            var definitionDeckJson = new [] {new {PackID = ""}};
+            var sDeckCardIds = JsonConvert.DeserializeAnonymousType(_request.Message, definitionDeckJson);
 
             for (int i = 0; i < 4; i++)
             {
@@ -342,9 +328,9 @@ namespace MTCG.server
                 }
             }
 
-            if (user.CardsInStack(deckCardIds))
+            if (_user.CardsInStack(deckCardIds))
             {
-                msgCode = user.SwapCard(deckCardIds);
+                msgCode = _user.SwapCard(deckCardIds);
             }
             else
             {
@@ -355,20 +341,17 @@ namespace MTCG.server
             {
                 _response.Status = "200 OK\n";
                 _response.Message = "Karten wurden hinzugefügt";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
             }
             else if (msgCode == 406)
             {
                 _response.Status = "406 Not Acceptable\n";
                 _response.Message = "Es wurden zu wenige Karten ausgewählt";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
 
             }
             else if (msgCode == 403)
             {
                 _response.Status = "403 Forbidden\n";
                 _response.Message = "Nicht alle CardIds sind im Besitz";
-                _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
             }
 
         }
@@ -383,19 +366,79 @@ namespace MTCG.server
             cardId = Int32.Parse(definitionDelDeal.WantedId);
             //packId = Int32.Parse(sCardId.WantedId);
 
-            msgCode = user.DeleteTradeDeal(cardId);
+            msgCode = _user.DeleteTradeDeal(cardId);
 
+            if (msgCode == 200)
+            {
+                _response.Status = "200 OK\n";
+                _response.Message = "Karten wurden hinzugefügt";
+            }
+
+        }
+
+        public void TradeOrInsert()
+        {
+            _user.LoadCards();
+            int msgCode = 0;
+            TradingDeserializeJson trade = JsonConvert.DeserializeObject<TradingDeserializeJson>(_response.Message);
+
+            if (trade.Insert)
+            {
+                msgCode = _user.InsertInTradeList(trade.GiveId,trade.WantId);
+            }
+            else
+            {
+                msgCode = _user.TradeCard(trade.UserTradeWith, trade.WantId);
+            }
+
+            if (msgCode == 200)
+            {
+                _response.Status = "200 OK\n";
+                _response.Message = "Karten wurden hinzugefügt";
+            }
+            else if (msgCode == 201)
+            {
+                _response.Status = "406 Not Acceptable\n";
+                _response.Message = "Trade Listen Eintrag wurde erstellt";
+
+            }
+            else if (msgCode == 404)
+            {
+                _response.Status = "404 Not Found\n";
+                _response.Message = "Karte nicht in Besitz oder Karte nicht vorhanden";
+            }
+            else if (msgCode == 406)
+            {
+                _response.Status = "406 Not Acceptable\n";
+                _response.Message = "WantId == GiveId";
+            }
+            else if (msgCode == 418)
+            {
+                _response.Status = "406 Not Acceptable\n";
+                _response.Message = "WantId == GiveId";
+            }
+
+        }
+
+        public void Battle(BattleLobby lobby)
+        {
+            string battleLog = _user.Battle(lobby);
+
+            _response.Status = "200 OK\n";
+            _response.Message = $"{battleLog}";
         }
 
         public void WatchAds()
         {
+            _user.WatchAds();
+
             _response.Status = "200 OK\n";
             _response.Message = "Hier könnte Ihre Werbung stehen";
-            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
         }
 
         public void MakeHeader()
         {
+            _response.ContentLength = $"Content-Length: {_response.Message.Length}\n";
             _response.Header = _response.Version
                                + _response.Status
                                + _response.Server

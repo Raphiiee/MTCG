@@ -49,7 +49,7 @@ namespace MTCG.database
             _conn.Close();
         }
 
-        public void LoadUserDeckCards(string user, int[] deckCardsCardsArray)
+        public int LoadUserDeckCards(string user, int[] deckCardsCardsArray)
         {
             int i = 0;
             string sqlGetDeckCardIds = "SELECT card_id FROM stack Where username=@u AND islocked = false AND isindeck = true ORDER BY card_id LIMIT 4";
@@ -65,7 +65,7 @@ namespace MTCG.database
                 i++;
             }
             _conn.Close();
-
+            return i;
         }
 
         public void LoadUserStackCards(string user, int[] stackCardsArray)
@@ -219,9 +219,9 @@ namespace MTCG.database
             return trades;
         }
 
-        public bool InsertInTradeList(string user, int giveCardId, int wantCardId)
+        public int InsertInTradeList(string user, int giveCardId, int wantCardId)
         {
-            string sqlSearchCard = "SELECT card_id FROM stack WHERE username=@u";
+            string sqlSearchCard = "SELECT card_id FROM stack WHERE username=@u AND islocked=false";
             string sqlLockCard = "UPDATE stack SET isindeck=false, islocked=true WHERE username=@u AND card_id=@ci";
             string sqlInsertInTradeList = "INSERT INTO trade (username, wanted_id, give_id) VALUES (@u,@wi,@gi)";
             bool cardIsInStack = false;
@@ -259,12 +259,14 @@ namespace MTCG.database
                 cmd.ExecuteNonQuery();
                 _conn.Close();
 
+                return 201;
+
             }
 
-            return false;
+            return 404;
         }
 
-        public bool TradeCard(string user, string dealUser, int wantCardId)
+        public int TradeCard(string user, string dealUser, int wantCardId)
         {
             string sqlGetTradeInfo = "SELECT give_id FROM trade WHERE username=@u AND wanted_id=@wi";
             string sqlDeleteCardFromStack = "DELETE FROM stack WHERE username=@u AND card_id=@ci";
@@ -324,7 +326,7 @@ namespace MTCG.database
             cmd.ExecuteNonQuery();
             _conn.Close();
 
-            return true;
+            return 200;
         }
 
         public int DeleteTradeDeal(string user, int wantCardId)

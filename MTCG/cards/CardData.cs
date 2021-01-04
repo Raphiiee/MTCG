@@ -25,12 +25,12 @@ namespace MTCG.cards
             }
         }
 
-        public void UserDeckCards(string user, Dictionary<int, Card> deck)
+        public int UserDeckCards(string user, Dictionary<int, Card> deck)
         {
             deck.Clear();
             int[] deckCardsArray = new int[5];
             Card temp;
-            _cdb.LoadUserDeckCards(user, deckCardsArray);
+            int cardCount = _cdb.LoadUserDeckCards(user, deckCardsArray);
 
             for (int i = 0; (i < 4) && (i < deckCardsArray.Length); i++)
             {
@@ -42,6 +42,8 @@ namespace MTCG.cards
                 CData.TryGetValue(deckCardsArray[i], out temp);
                 deck.Add(i, temp);
             }
+
+            return cardCount;
         }
 
         public void UserStackCards(string user, Dictionary<int, Card> stack)
@@ -84,12 +86,12 @@ namespace MTCG.cards
             return _cdb.ShowTrades(CData);
         }
 
-        public bool InsertInTradeList(string user, int giveCardId, int wantCardId)
+        public int InsertInTradeList(string user, int giveCardId, int wantCardId)
         {
             return _cdb.InsertInTradeList(user, giveCardId, wantCardId);
         }
 
-        public bool TradeCard(string user, string dealUser, int wantCardId)
+        public int TradeCard(string user, string dealUser, int wantCardId)
         {
             return _cdb.TradeCard(user, dealUser, wantCardId);
         }

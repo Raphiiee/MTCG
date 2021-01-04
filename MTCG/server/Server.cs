@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using MTCG.battle;
 using MTCG.server.enums;
-using MTCG.user;
-using Newtonsoft.Json;
 
 namespace MTCG.server
 {
+
     public class Server
     {
         TcpListener server = null;
+        private BattleLobby _lobby = new BattleLobby();
         public Server(string ip, int port)
         {
             IPAddress localAddr = IPAddress.Parse(ip);
@@ -26,10 +29,12 @@ namespace MTCG.server
             {
                 while (true)
                 {
+                    
+
                     Console.WriteLine("Waiting for a connection...");
                     TcpClient client = server.AcceptTcpClient();
                     Console.WriteLine("Connected!");
-                    Thread t = new Thread(new ParameterizedThreadStart(HandleDeivce));
+                    Thread t = new Thread(new ParameterizedThreadStart(HandleDevice));
                     t.Start(client);
                 }
             }
@@ -39,15 +44,13 @@ namespace MTCG.server
                 server.Stop();
             }
         }
-        public void HandleDeivce(Object obj)
+        public void HandleDevice(Object obj)
         {
             TcpClient client = (TcpClient)obj;
             var stream = client.GetStream();
-            string imei = String.Empty;
             string data = null;
             Byte[] bytes = new Byte[300000];
             int i;
-            List<string> messageQue = new List<string>();
             DataHandler tcp = new DataHandler();
 
             try
@@ -107,7 +110,7 @@ namespace MTCG.server
                             }
                             else if (tcp.GetPath() == AllowedPaths.Battle && tcp.GetMethod() == AllowedMethods.GET)
                             {
-                                
+                                tcp.Battle(_lobby);
                             }
                             else if (tcp.GetPath() == AllowedPaths.Tradings && tcp.GetMethod() == AllowedMethods.GET)
                             {
@@ -115,7 +118,7 @@ namespace MTCG.server
                             }
                             else if (tcp.GetPath() == AllowedPaths.Tradings && tcp.GetMethod() == AllowedMethods.POST)
                             {
-                                //HIER WEITERMACHEN => tcp.TradeOrInsert();
+                                tcp.TradeOrInsert();
                             }
                             else if (tcp.GetPath() == AllowedPaths.Tradings && tcp.GetMethod() == AllowedMethods.DELETE)
                             {

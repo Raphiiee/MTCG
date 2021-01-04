@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MTCG.battle;
 using MTCG.cards;
 using MTCG.user.enums;
 using MTCG.database;
@@ -169,20 +170,26 @@ namespace MTCG.user
             return _cData.ShowTrades();
         }
 
-        public bool InsertInTradeList(int giveCardId, int wantCardId)
+        public int InsertInTradeList(int giveCardId, int wantCardId)
         {
             if (giveCardId == wantCardId)
             {
-                return false;
+                return 406;
             }
 
             return _cData.InsertInTradeList(Username, giveCardId, wantCardId);
         }
 
-        public bool TradeCard(string dealUser, int wantCardId)
+        public int TradeCard(string dealUser, int wantCardId)
         {
             int[] cardArray = new int[20000];
             int i = 0;
+
+            if (dealUser == Username)
+            {
+                return 418;
+            }
+
             foreach (KeyValuePair<int, Card> kvp in Stack)
             {
                 cardArray[i] = kvp.Value.CardId;
@@ -199,7 +206,7 @@ namespace MTCG.user
                 return _cData.TradeCard(Username, dealUser, wantCardId);
             }
 
-            return false;
+            return 404;
         }
 
         public int DeleteTradeDeal(int wantCardId)
@@ -215,6 +222,23 @@ namespace MTCG.user
         public string ShowUserStats()
         {
             return _db.ShowUserStats(Username);
+        }
+
+        public string Battle(BattleLobby lobby)
+        {
+            string battleLog = "\n";
+            int battleId = lobby.AddPlayer(Username);
+            
+            while (battleLog.Length <= 500)
+            {
+                if (lobby.ReadLog(battleId).Length != 0)
+                {
+                    battleLog = lobby.ReadLog(battleId);
+                }
+                
+            }
+
+            return battleLog;
         }
 
         public void WatchAds()
