@@ -3,7 +3,7 @@ using MTCG.cards.monster;
 using MTCG.cards.spell;
 using NUnit.Framework;
 
-namespace MTCG.Test.spell
+namespace MTCG.Test.cards.spell
 {
     [TestFixture]
     public class FireSpellTest
@@ -16,10 +16,10 @@ namespace MTCG.Test.spell
         [SetUp]
         public void Setup()
         {
-            _fireSpell = new FireSpell(CardType.Spell, ElementType.Fire, 20, "Hotter Spell");
-            _kraken = new Kraken(CardType.Monster, ElementType.Water, 170, "Krakie dakie do whatcha gonna do", CardProperty.Kraken);
-            _goblinWater = new Goblin(CardType.Monster, ElementType.Water, 100, "Gobster the Robster", CardProperty.Goblin);
-            _goblinNormal = new Goblin(CardType.Monster, ElementType.Normal, 100, "Gobster the Robster", CardProperty.Goblin);
+            _fireSpell = new FireSpell(CardType.Spell, ElementType.Fire, 20, "Hotter Spell",0,1);
+            _kraken = new Kraken(CardType.Monster, ElementType.Water, 170, "Krakie dakie do whatcha gonna do", CardProperty.Kraken,1);
+            _goblinWater = new Goblin(CardType.Monster, ElementType.Water, 100, "Gobster the Robster", CardProperty.Goblin,1);
+            _goblinNormal = new Goblin(CardType.Monster, ElementType.Normal, 100, "Gobster the Robster", CardProperty.Goblin,1);
         }
 
         [Test]

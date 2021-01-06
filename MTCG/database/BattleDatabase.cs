@@ -39,8 +39,7 @@ namespace MTCG.database
             NpgsqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-
-                    playerOneId = reader.GetInt32(0);
+                playerOneId = reader.GetInt32(0);
             }
             _conn.Close();
 

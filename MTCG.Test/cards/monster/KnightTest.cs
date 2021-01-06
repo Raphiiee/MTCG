@@ -3,7 +3,7 @@ using MTCG.cards.monster;
 using MTCG.cards.spell;
 using NUnit.Framework;
 
-namespace MTCG.Test.monster
+namespace MTCG.Test.cards.monster
 {
     [TestFixture]
     public class KnightTest
@@ -14,8 +14,8 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _knight = new Knight(CardType.Monster, ElementType.Normal, 150, "Knight in the Night, just Right", CardProperty.Knight);
-            _waterSpell = new WaterSpell(CardType.Spell, ElementType.Water, 20, "Nasser Spell");
+            _knight = new Knight(CardType.Monster, ElementType.Normal, 150, "Knight in the Night, just Right", CardProperty.Knight,1);
+            _waterSpell = new WaterSpell(CardType.Spell, ElementType.Water, 20, "Nasser Spell",0,1);
         }
 
         [Test]

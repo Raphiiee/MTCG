@@ -3,7 +3,7 @@ using MTCG.cards.monster;
 using MTCG.cards.spell;
 using NUnit.Framework;
 
-namespace MTCG.Test.spell
+namespace MTCG.Test.cards.spell
 {
     [TestFixture]
     public class NormalSpellTest
@@ -17,10 +17,10 @@ namespace MTCG.Test.spell
         [SetUp]
         public void Setup()
         {
-            _normalSpell = new NormalSpell(CardType.Spell, ElementType.Normal, 20, "Normal Spell");
-            _kraken = new Kraken(CardType.Monster, ElementType.Water, 170, "Krakie dakie do whatcha gonna do", CardProperty.Kraken);
-            _goblinFire = new Goblin(CardType.Monster, ElementType.Fire, 100, "Gobster the Robster", CardProperty.Goblin);
-            _goblinWater = new Goblin(CardType.Monster, ElementType.Water, 100, "Gobster the Robster", CardProperty.Goblin);
+            _normalSpell = new NormalSpell(CardType.Spell, ElementType.Normal, 20, "Normal Spell",0,1);
+            _kraken = new Kraken(CardType.Monster, ElementType.Water, 170, "Krakie dakie do whatcha gonna do", CardProperty.Kraken,1);
+            _goblinFire = new Goblin(CardType.Monster, ElementType.Fire, 100, "Gobster the Robster", CardProperty.Goblin,1);
+            _goblinWater = new Goblin(CardType.Monster, ElementType.Water, 100, "Gobster the Robster", CardProperty.Goblin,1);
         }
 
         [Test]

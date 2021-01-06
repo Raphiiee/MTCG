@@ -2,7 +2,7 @@
 using MTCG.cards.monster;
 using NUnit.Framework;
 
-namespace MTCG.Test.monster
+namespace MTCG.Test.cards.monster
 {
     [TestFixture]
     public class FireElveTest
@@ -11,7 +11,7 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _fireElves = new FireElve(CardType.Monster, ElementType.Fire, 10, "I am Fry the FireFly", CardProperty.FireElve);
+            _fireElves = new FireElve(CardType.Monster, ElementType.Fire, 10, "I am Fry the FireFly", CardProperty.FireElve,1);
         }
 
         [Test]

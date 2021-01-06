@@ -2,7 +2,7 @@
 using MTCG.cards.monster;
 using NUnit.Framework;
 
-namespace MTCG.Test.monster
+namespace MTCG.Test.cards.monster
 {
     [TestFixture]
     public class WizardTest
@@ -11,7 +11,7 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _wizard = new Wizard(CardType.Monster, ElementType.Fire, 200, "Ich bin ein Witz art", CardProperty.Wizard);
+            _wizard = new Wizard(CardType.Monster, ElementType.Fire, 200, "Ich bin ein Witz art", CardProperty.Wizard,1);
         }
 
         [Test]

@@ -2,7 +2,7 @@
 using MTCG.cards.monster;
 using NUnit.Framework;
 
-namespace MTCG.Test.monster
+namespace MTCG.Test.cards.monster
 {
     [TestFixture]
     public class GoblinTest
@@ -13,8 +13,8 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _goblin = new Goblin(CardType.Monster, ElementType.Fire, 100, "Gobster the Robster", CardProperty.Goblin);
-            _dragon = new Dragon(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.Dragon);
+            _goblin = new Goblin(CardType.Monster, ElementType.Fire, 100, "Gobster the Robster", CardProperty.Goblin,1);
+            _dragon = new Dragon(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.Dragon,1);
         }
 
         [Test]

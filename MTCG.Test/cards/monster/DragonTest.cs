@@ -2,7 +2,7 @@ using MTCG.cards.enums;
 using MTCG.cards.monster;
 using NUnit.Framework;
 
-namespace MTCG.Test.monster
+namespace MTCG.Test.cards.monster
 {
     [TestFixture]
     public class DragonTest
@@ -13,8 +13,8 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _dragon = new Dragon(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.Dragon);
-            _fireElve = new FireElve(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.FireElve);
+            _dragon = new Dragon(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.Dragon,1);
+            _fireElve = new FireElve(CardType.Monster, ElementType.Fire, 10, "Drache oder so", CardProperty.FireElve,1);
         }
 
         [Test]

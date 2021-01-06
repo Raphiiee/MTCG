@@ -2,7 +2,7 @@
 using MTCG.cards.monster;
 using NUnit.Framework;
 
-namespace MTCG.Test.monster
+namespace MTCG.Test.cards.monster
 {
     [TestFixture]
     public class KrakenTest
@@ -12,7 +12,7 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _kraken = new Kraken(CardType.Monster, ElementType.Water, 170, "Krakie dakie do whatcha gonna do", CardProperty.Kraken);
+            _kraken = new Kraken(CardType.Monster, ElementType.Water, 170, "Krakie dakie do whatcha gonna do", CardProperty.Kraken,1);
         }
 
         [Test]

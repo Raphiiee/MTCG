@@ -7,7 +7,7 @@ using MTCG.user.enums;
 
 namespace MTCG.battle
 {
-    class BattleHandler
+    public class BattleHandler
     {
         public string Log { get; private set; }
         private int _playerOneDamage;

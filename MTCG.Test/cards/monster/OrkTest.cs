@@ -2,7 +2,7 @@
 using MTCG.cards.monster;
 using NUnit.Framework;
 
-namespace MTCG.Test.monster
+namespace MTCG.Test.cards.monster
 {
     [TestFixture]
     public class OrkTest
@@ -13,8 +13,8 @@ namespace MTCG.Test.monster
         [SetUp]
         public void Setup()
         {
-            _ork = new Ork(CardType.Monster, ElementType.Normal, 190, "Ich bin Orrg und du?", CardProperty.Org);
-            _wizard = new Wizard(CardType.Monster, ElementType.Fire, 200, "Ich bin ein Witz art", CardProperty.Wizard);
+            _ork = new Ork(CardType.Monster, ElementType.Normal, 190, "Ich bin Orrg und du?", CardProperty.Ork,1);
+            _wizard = new Wizard(CardType.Monster, ElementType.Fire, 200, "Ich bin ein Witz art", CardProperty.Wizard,1);
         }
 
         [Test]
@@ -24,7 +24,7 @@ namespace MTCG.Test.monster
             Assert.AreEqual(_ork.Element, ElementType.Normal);
             Assert.AreEqual(_ork.CardDamage, 190);
             Assert.AreEqual(_ork.CardName, "Ich bin Orrg und du?");
-            Assert.AreEqual(_ork.CardProperty, CardProperty.Org);
+            Assert.AreEqual(_ork.CardProperty, CardProperty.Ork);
         }
 
         [Test]
