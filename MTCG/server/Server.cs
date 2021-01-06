@@ -12,7 +12,6 @@ namespace MTCG.server
     public class Server
     {
         TcpListener _server = null;
-        BattleLobby _lobby = new BattleLobby();
         public Server(string ip, int port)
         {
             IPAddress localAddr = IPAddress.Parse(ip);
@@ -49,6 +48,7 @@ namespace MTCG.server
             Byte[] bytes = new Byte[300000];
             int i;
             DataHandler tcp = new DataHandler();
+            BattleLobby _lobby = new BattleLobby();
 
             try
             {

@@ -267,13 +267,18 @@ namespace MTCG.server
         {
             _user.LoadCards();
             int packId = 0;
-            var definitionPack = new {PackID = ""};
-            var sPackId = JsonConvert.DeserializeAnonymousType(_request.Message, definitionPack);
+            int msgCode = 404;
+            if (_request.Message.Length > 10)
+            {
+                var definitionPack = new {PackID = ""};
+                var sPackId = JsonConvert.DeserializeAnonymousType(_request.Message, definitionPack);
 
-            //packId = Int32.Parse(definitionPack.PackID);
-            packId = Int32.Parse(sPackId.PackID);
+                //packId = Int32.Parse(definitionPack.PackID);
+                packId = Int32.Parse(sPackId.PackID);
 
-            int msgCode = _user.BuyCard(packId);
+                msgCode = _user.BuyCard(packId);
+            }
+            
 
             if (msgCode == 200)
             {
@@ -290,7 +295,11 @@ namespace MTCG.server
             {
                 _response.Status = "409 Conflict\n";
                 _response.Message = "Alle Karten von diesem Pack schon vorhanden";
-
+            }
+            else if (msgCode == 404)
+            {
+                _response.Status = "404 Not Found\n";
+                _response.Message = "Pack nicht vorhanden";
             }
 
         }
