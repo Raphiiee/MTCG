@@ -39,10 +39,16 @@ namespace MTCG.server
             return true;
         }
 
+        public void FalseCredentials()
+        {
+            _response.Status = "403 Forbbiden\n";
+            _response.Message = "False Credentials";
+        }
+
         public void WrongPath()
         {
             _response.Status = "403 Forbbiden\n";
-            _response.Message = "wrong path";
+            _response.Message = "Wrong Path, Rome is not that way!";
         }
 
         public void GetData(string data)
@@ -79,6 +85,10 @@ namespace MTCG.server
                 {
                     _request.Method = AllowedMethods.POST;
                 }
+                else if (firstSplit[0].Contains("DELETE"))
+                {
+                    _request.Method = AllowedMethods.DELETE;
+                }
 
                 if (firstSplit[1].Contains("USERS"))
                 {
@@ -88,7 +98,7 @@ namespace MTCG.server
                 {
                     _request.Path = AllowedPaths.TransactionsPackages;
                 }
-                else if (firstSplit[1].Contains("Cards"))
+                else if (firstSplit[1].Contains("CARDS"))
                 {
                     _request.Path = AllowedPaths.Cards;
                 }
@@ -107,6 +117,10 @@ namespace MTCG.server
                 else if (firstSplit[1].Contains("BATTLE"))
                 {
                     _request.Path = AllowedPaths.Battle;
+                }
+                else if (firstSplit[1].Contains("LOG"))
+                {
+                    _request.Path = AllowedPaths.BattleLog;
                 }
                 else if (firstSplit[1].Contains("TRADINGS"))
                 {
@@ -256,8 +270,8 @@ namespace MTCG.server
             var definitionPack = new {PackID = ""};
             var sPackId = JsonConvert.DeserializeAnonymousType(_request.Message, definitionPack);
 
-            packId = Int32.Parse(definitionPack.PackID);
-            //packId = Int32.Parse(sPackId.PackID);
+            //packId = Int32.Parse(definitionPack.PackID);
+            packId = Int32.Parse(sPackId.PackID);
 
             int msgCode = _user.BuyCard(packId);
 
@@ -294,7 +308,7 @@ namespace MTCG.server
             _user.LoadCards();
             string stackCards = _user.PrintStackCards();
             string deckCards = _user.PrintDeckCards();
-            stackCards += "\n_____________Karten im Deck_____________";
+            stackCards += "\n_____________Karten im Deck_____________\n";
             stackCards += deckCards;
 
             _response.Status = "200 OK\n";
@@ -304,7 +318,7 @@ namespace MTCG.server
         public void ShowDeckCards()
         {
             _user.LoadCards();
-            string deckCards = "\n_____________Karten im Deck_____________";
+            string deckCards = "\n_____________Karten im Deck_____________\n";
             deckCards += _user.PrintDeckCards();
 
             _response.Status = "200 OK\n";
@@ -316,23 +330,23 @@ namespace MTCG.server
             _user.LoadCards();
             int msgCode = 0;
             int[] deckCardIds = new int[4];
-            var definitionDeckJson = new [] {new {PackID = ""}};
+            var definitionDeckJson = new [] {new { DeckCard = ""}};
             var sDeckCardIds = JsonConvert.DeserializeAnonymousType(_request.Message, definitionDeckJson);
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < sDeckCardIds.Length; i++)
             {
-                deckCardIds[i] = Int32.Parse(sDeckCardIds[i].PackID);
-                if (deckCardIds[i] < 0)
+                deckCardIds[i] = Int32.Parse(sDeckCardIds[i].DeckCard);
+                if (deckCardIds[i] < 0 || sDeckCardIds.Length <= 3)
                 {
                     msgCode = 406; 
                 }
             }
 
-            if (_user.CardsInStack(deckCardIds))
+            if (_user.CardsInStack(deckCardIds) && msgCode == 0)
             {
                 msgCode = _user.SwapCard(deckCardIds);
             }
-            else
+            else if (msgCode == 0)
             {
                 msgCode = 403; 
             }
@@ -360,18 +374,17 @@ namespace MTCG.server
         {
             int msgCode = 0;
             int cardId = 0;
-            var definitionDelDeal = new { WantedId = "" };
+            var definitionDelDeal = new { WANTEDID = "" };
             var sCardId = JsonConvert.DeserializeAnonymousType(_request.Message, definitionDelDeal);
 
-            cardId = Int32.Parse(definitionDelDeal.WantedId);
-            //packId = Int32.Parse(sCardId.WantedId);
+            cardId = Int32.Parse(sCardId.WANTEDID);
 
             msgCode = _user.DeleteTradeDeal(cardId);
 
             if (msgCode == 200)
             {
                 _response.Status = "200 OK\n";
-                _response.Message = "Karten wurden hinzugefügt";
+                _response.Message = "Trade Deal deleted";
             }
 
         }
@@ -380,15 +393,15 @@ namespace MTCG.server
         {
             _user.LoadCards();
             int msgCode = 0;
-            TradingDeserializeJson trade = JsonConvert.DeserializeObject<TradingDeserializeJson>(_response.Message);
+            TradingDeserializeJson trade = JsonConvert.DeserializeObject<TradingDeserializeJson>(_request.Message.ToLower());
 
-            if (trade.Insert)
+            if (trade.insert)
             {
-                msgCode = _user.InsertInTradeList(trade.GiveId,trade.WantId);
+                msgCode = _user.InsertInTradeList(trade.giveid,trade.wantid);
             }
             else
             {
-                msgCode = _user.TradeCard(trade.UserTradeWith, trade.WantId);
+                msgCode = _user.TradeCard(trade.usertradewith, trade.wantid);
             }
 
             if (msgCode == 200)
@@ -398,7 +411,7 @@ namespace MTCG.server
             }
             else if (msgCode == 201)
             {
-                _response.Status = "406 Not Acceptable\n";
+                _response.Status = "201 Created\n";
                 _response.Message = "Trade Listen Eintrag wurde erstellt";
 
             }
@@ -422,10 +435,29 @@ namespace MTCG.server
 
         public void Battle(BattleLobby lobby)
         {
-            string battleLog = _user.Battle(lobby);
+            int battleId = _user.Battle(lobby);
 
             _response.Status = "200 OK\n";
-            _response.Message = $"{battleLog}";
+            _response.Message = $"Your BattleId is:{battleId}\nPlease Watch the Log, when the Battle is finished";
+        }
+
+        public void BattleLog(BattleLobby lobby)
+        {
+            var definitionDelDeal = new { BATTLEID = "" };
+            var sCardId = JsonConvert.DeserializeAnonymousType(_request.Message, definitionDelDeal);
+            int battleId = Int32.Parse(sCardId.BATTLEID);
+            string battleLog = _user.BattleLog(lobby, battleId);
+
+            if (battleLog.Length <= 50)
+            {
+                _response.Status = "102 Processing\n";
+                _response.Message = "Daten werden verarbeitet";
+            }
+            else
+            {
+                _response.Status = "200 OK\n";
+                _response.Message = $"{battleLog}";
+            }
         }
 
         public void WatchAds()

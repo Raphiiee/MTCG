@@ -37,7 +37,7 @@ namespace MTCG.battle
                     Card playerOneCard;
                     Card playerTwoCard;
 
-                    Log += $"\n\n-------------Runde {i}-------------";
+                    Log += $"-------------Runde {i}-------------";
                     Log += $"\n\t{userPo} has won {_playerOneWinCounter} Runden and has {_playerDeckOne.Count} Cards";
                     Log += $"\n\t{userPt} has won {_playerTwoWinCounter} Runden and has {_playerDeckTwo.Count} Cards\n";
 
@@ -65,17 +65,17 @@ namespace MTCG.battle
                     {
                         _playerOneWinCounter++;
                         TakeCardOver(_playerDeckOne,_playerDeckTwo, playerTwoCard);
-                        Log += $"\n{userPo} has won this Round with {_playerOneDamage}";
+                        Log += $"\n{userPo} has won this Round with {_playerOneDamage}\n\n";
                     }
                     else if (_playerTwoDamage > _playerOneDamage)
                     {
                         _playerTwoWinCounter++;
                         TakeCardOver(_playerDeckTwo, _playerDeckOne, playerOneCard);
-                        Log += $"\n{userPt} has won this Round with {_playerTwoDamage}";
+                        Log += $"\n{userPt} has won this Round with {_playerTwoDamage}\n\n";
                     }
                     else
                     {
-                        Log += $"\n{userPo} and {userPt} has the same Damage points [TIE]";
+                        Log += $"\n{userPo} and {userPt} has the same Damage points [TIE]\n\n";
                     }
                 }
 

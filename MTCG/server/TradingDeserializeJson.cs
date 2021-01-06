@@ -2,9 +2,9 @@
 {
     public class TradingDeserializeJson
     {
-        public bool Insert { get; set; }
-        public int WantId { get; set; }
-        public int GiveId { get; set; }
-        public string UserTradeWith { get; set; }
+        public bool insert { get; set; }
+        public int wantid { get; set; }
+        public int giveid { get; set; }
+        public string usertradewith { get; set; }
     }
 }

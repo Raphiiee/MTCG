@@ -9,6 +9,7 @@
         Stats,
         Score,
         Battle,
+        BattleLog,
         Tradings,
         Logout,
         WatchAds,

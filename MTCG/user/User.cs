@@ -119,7 +119,7 @@ namespace MTCG.user
             string stackCards = "";
             foreach (KeyValuePair<int, Card> kvp in Stack)
             {
-                stackCards += $"CardID {kvp.Value.CardId} |Card = {kvp.Value.CardType} {kvp.Value.Element} {kvp.Value.CardDamage} {kvp.Value.CardName} {kvp.Value.CardProperty}";
+                stackCards += $"CardID {kvp.Value.CardId} |Card = {kvp.Value.CardType} {kvp.Value.Element} {kvp.Value.CardDamage} {kvp.Value.CardName} {kvp.Value.CardProperty}\n";
             }
 
             return stackCards;
@@ -130,7 +130,7 @@ namespace MTCG.user
             string deckCards = "";
             foreach (KeyValuePair<int, Card> kvp in Deck)
             {
-                deckCards += $"CardID {kvp.Value.CardId} |Card = {kvp.Value.CardType} {kvp.Value.Element} {kvp.Value.CardDamage} {kvp.Value.CardName} {kvp.Value.CardProperty}";
+                deckCards += $"CardID {kvp.Value.CardId} |Card = {kvp.Value.CardType} {kvp.Value.Element} {kvp.Value.CardDamage} {kvp.Value.CardName} {kvp.Value.CardProperty}\n";
             }
 
             return deckCards;
@@ -224,21 +224,16 @@ namespace MTCG.user
             return _db.ShowUserStats(Username);
         }
 
-        public string Battle(BattleLobby lobby)
+        public int Battle(BattleLobby lobby)
         {
-            string battleLog = "\n";
             int battleId = lobby.AddPlayer(Username);
-            
-            while (battleLog.Length <= 500)
-            {
-                if (lobby.ReadLog(battleId).Length != 0)
-                {
-                    battleLog = lobby.ReadLog(battleId);
-                }
-                
-            }
 
-            return battleLog;
+            return battleId;
+        }
+
+        public string BattleLog(BattleLobby lobby, int battleId)
+        {
+            return lobby.ReadLog(battleId);
         }
 
         public void WatchAds()

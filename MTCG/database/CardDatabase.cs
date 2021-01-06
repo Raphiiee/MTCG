@@ -332,7 +332,7 @@ namespace MTCG.database
         public int DeleteTradeDeal(string user, int wantCardId)
         {
             string sqlGetGiveId = "SELECT give_id FROM trade WHERE username=@u AND wanted_id=@wi";
-            string sqlUnlockCard = "UPDATE FROM stack SET islocked=false WHERE username=@u AND card_id=@ci";
+            string sqlUnlockCard = "UPDATE stack SET islocked=false WHERE username=@u AND card_id=@ci";
             string sqlDeleteTradeDeal = "DELETE FROM trade WHERE username=@u AND wanted_id=@wi";
             int giveCardId = 0;
 

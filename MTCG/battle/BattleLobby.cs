@@ -30,7 +30,6 @@ namespace MTCG.battle
 
         public void Start()
         {
-            Thread.Sleep(1000);
             Mutex mutex = new Mutex();
             mutex.WaitOne();
 
@@ -41,7 +40,7 @@ namespace MTCG.battle
             {
                 string battleLog = _battle.StartBattle(players[0], players[1]);
                 _bdb.FinishedBattle(battleId, battleLog);
-                //_battle.ClearBattle();
+                _battle.ClearBattle();
             }
             mutex.Close();
         }

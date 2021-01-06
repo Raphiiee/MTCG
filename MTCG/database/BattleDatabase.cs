@@ -31,7 +31,7 @@ namespace MTCG.database
             string sqlInsertPlayerOne = "UPDATE battlelog SET playerone=@u WHERE battle_id=@bi";
             string sqlInsertPlayerTwo = "UPDATE battlelog SET playertwo=@u WHERE battle_id=@bi";
             string sqlInsertPlayer = "INSERT INTO battlelog (playerone) VALUES (@u)";
-            string sqlGetBattleId = "SELECT battle_id FROM battlelog WHERE playerone=@u AND playertwo=@u AND isbattlefinished=false ORDER BY battle_id DESC LIMIT 1";
+            string sqlGetBattleId = "SELECT battle_id FROM battlelog WHERE playerone=@u OR playertwo=@u AND isbattlefinished=false ORDER BY battle_id DESC LIMIT 1";
 
             _conn.Open();
             NpgsqlCommand cmd = new NpgsqlCommand(sqlGetBattleAsPlayerOne, _conn);
@@ -39,11 +39,8 @@ namespace MTCG.database
             NpgsqlDataReader reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                if (reader.GetInt32(0) > 0)
-                {
+
                     playerOneId = reader.GetInt32(0);
-                }
-                
             }
             _conn.Close();
 
