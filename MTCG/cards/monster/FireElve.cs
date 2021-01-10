@@ -2,9 +2,9 @@
 
 namespace MTCG.cards.monster
 {
-    public class Kraken : BaseCards
+    public class FireElve : BaseCards
     {
-        public Kraken(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardId)
+        public FireElve(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardId)
             : base(cardType, element, cardDamage, cardName, cardProperty, cardId)
         {
 

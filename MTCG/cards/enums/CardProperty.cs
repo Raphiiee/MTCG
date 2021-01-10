@@ -4,9 +4,10 @@
     {
         Dragon = 1,
         Knight,
-        Org,
+        Ork,
         Wizard,
         Goblin,
-        Kraken
+        Kraken,
+        FireElve
     }
 }

@@ -1,7 +1,11 @@
 ﻿using System;
-using Cards;
-using MTCG.cards.enums;
-using MTCG.Cards.monster;
+using System.Threading;
+using MTCG.battle;
+using MTCG.cards;
+using MTCG.database;
+using MTCG.server;
+using MTCG.user;
+using MTCG.user.enums;
 
 namespace MTCG
 {
@@ -9,10 +13,25 @@ namespace MTCG
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+           
 
-            Dragon dragon = new Dragon(CardType.Monster, ElementType.Fire, CardProperty.Dragon, 10, "Ich bimbs");
-            Console.WriteLine(dragon);
+            BattleLobby lobby = new BattleLobby();
+
+            Thread t = new Thread(delegate ()
+            {
+                // replace the IP with your system IP Address...
+                Server myserver = new Server("127.0.0.1", 10001);
+            });
+            t.Start();
+
+            Console.WriteLine("Server Started...!");
+
+            while (true)
+            {
+                lobby.Start();
+                //Thread.Sleep(250);
+            }
+
         }
     }
 }

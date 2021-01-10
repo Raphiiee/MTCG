@@ -1,12 +1,11 @@
-﻿using Cards;
-using MTCG.cards.enums;
+﻿using MTCG.cards.enums;
 
-namespace MTCG.Cards.monster
+namespace MTCG.cards.monster
 {
     public class Wizard : BaseCards
     {
-        public Wizard(CardType cardType, ElementType element, CardProperty cardProperty, int cardDamage, string cardName)
-            : base(cardType, element, cardProperty, cardDamage, cardName)
+        public Wizard(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardId)
+            : base(cardType, element, cardDamage, cardName, cardProperty, cardId)
         {
 
         }

@@ -2,9 +2,9 @@
 
 namespace MTCG.cards.monster
 {
-    public class Kraken : BaseCards
+    public class Ork : BaseCards
     {
-        public Kraken(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardId)
+        public Ork(CardType cardType, ElementType element, int cardDamage, string cardName, CardProperty cardProperty, int cardId)
             : base(cardType, element, cardDamage, cardName, cardProperty, cardId)
         {
 
@@ -12,6 +12,11 @@ namespace MTCG.cards.monster
 
         public int GetCardDamagePoints(BaseCards opponent)
         {
+            if (opponent.CardProperty == CardProperty.Wizard)
+            {
+                return 0;
+            }
+
             return this.CardDamage;
         }
     }
