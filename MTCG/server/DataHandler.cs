@@ -66,7 +66,7 @@ namespace MTCG.server
             _response.ContentLanguage = "Content-Language: de\n";
             _response.ContentType = "Content-Type: text/plain\n";
             _response.Connection = "Connection: close\nKeep-Alive: timeout=50, max=0\n";
-            _response.Charset = "Charset: utf-8\n\n";
+            _response.Charset = "Charset: utf-16\n\n";
 
             if (data.Contains("POST") || data.Contains("GET") || data.Contains("PUT") || data.Contains("DELETE"))
             {
@@ -474,7 +474,10 @@ namespace MTCG.server
             _user.WatchAds();
 
             _response.Status = "200 OK\n";
-            _response.Message = "Hier könnte Ihre Werbung stehen";
+            _response.Message = "Hier könnte Ihre Werbung stehen\n" +
+                                "Gesponserte Beitraege:\nIch baue meine Welt sowie sie mir gefaellt, meine Wunderwelt mein Haus von Elk\n" +
+                                "Unsere Werbung ist so natürlich wie unser Apfelsaft gespritzt\n" +
+                                "Ganz Ehrlich Granny's Apfelsaft gespritzt\n";
         }
 
         public void MakeHeader()

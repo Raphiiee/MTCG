@@ -52,12 +52,12 @@ namespace MTCG.battle
                     _playerTwoDamage = playerTwoCard.CardDamage;
 
                     LogInfoCard(userPo, playerOneCard, _playerOneDamage);
-                    Effectiveness(playerOneCard, playerTwoCard, _playerOneDamage);
-                    DodgeAttack(playerOneCard, playerTwoCard, _playerOneDamage);
+                    Effectiveness(playerOneCard, playerTwoCard, ref _playerOneDamage);
+                    DodgeAttack(playerOneCard, playerTwoCard, ref _playerOneDamage);
 
                     LogInfoCard(userPt, playerTwoCard, _playerTwoDamage);
-                    Effectiveness(playerTwoCard, playerOneCard, _playerTwoDamage);
-                    DodgeAttack(playerTwoCard,playerOneCard,_playerTwoDamage);
+                    Effectiveness(playerTwoCard, playerOneCard, ref _playerTwoDamage);
+                    DodgeAttack(playerTwoCard,playerOneCard, ref _playerTwoDamage);
 
                     Log += "_______________________________________";
 
@@ -116,46 +116,46 @@ namespace MTCG.battle
             int deckCountPo = _cData.UserDeckCards(userPo, _playerDeckOne);
             int deckCountPt = _cData.UserDeckCards(userPt, _playerDeckTwo);
 
-            if (deckCountPo < 2 || deckCountPt < 2)
+            if (deckCountPo < 4 || deckCountPt < 4)
             {
                 Log += "Spiel wird abgebrochen, weil nicht genug Karten vorhanden sind";
                 return false;
             }
 
             return true;
-
         }
 
-        public void Effectiveness(Card attackCard, Card defenderCard, int attackCardDamage)
+        public void Effectiveness(Card attackCard, Card defenderCard, ref int attackCardDamage)
         {
             if (attackCard.CardType == CardType.Spell)
             {
                 if (defenderCard.CardProperty == CardProperty.Kraken)
                 {
                     Log += "\n\tKraken immune against spells => NO EFFECT ";
+                    attackCardDamage = 0;
                     return;
                 }
                 if ((defenderCard.CardProperty == CardProperty.Knight) && attackCard.Element == ElementType.Water)
                 {
                     Log += "\n\tKnight Drawned in Water Spell => Dead";
-                    attackCardDamage = Int32.MaxValue;
+                    attackCardDamage = 10000;
                     return;
                 }
                 if ((attackCard.Element == ElementType.Water) && (defenderCard.Element == ElementType.Fire))
                 {
-                    attackCardDamage = attackCardDamage * 2;
+                    attackCardDamage = attackCard.CardDamage * 2;
                     Log += $"\n\tWater -> Fire => EFFECT Damage*2={attackCardDamage}";
                     return;
                 }
                 if ((attackCard.Element == ElementType.Fire) && (defenderCard.Element == ElementType.Normal))
                 {
-                    attackCardDamage = attackCardDamage * 2;
+                    attackCardDamage = attackCard.CardDamage * 2;
                     Log += $"\n\tFire -> Normal => EFFECT Damage*2={attackCardDamage}";
                     return;
                 }
                 if ((attackCard.Element == ElementType.Normal) && (defenderCard.Element == ElementType.Water))
                 {
-                    attackCardDamage = attackCardDamage * 2;
+                    attackCardDamage = attackCard.CardDamage * 2;
                     Log += $"\n\tNormal -> Water => EFFECT Damage*2={attackCardDamage}";
                     return;
                 }
@@ -163,7 +163,7 @@ namespace MTCG.battle
             Log += "\n\tNo Effects";
         }
 
-        public void DodgeAttack(Card attackCard, Card defenderCard, int attackCardDamage)
+        public void DodgeAttack(Card attackCard, Card defenderCard, ref int attackCardDamage)
         {
             if ((attackCard.CardProperty == CardProperty.Goblin) && (defenderCard.CardProperty == CardProperty.Dragon))
             {
